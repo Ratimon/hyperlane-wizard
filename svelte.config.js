@@ -1,5 +1,7 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { sveltePreprocess } from 'svelte-preprocess'
+
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,7 +10,6 @@ const config = {
 	preprocess: vitePreprocess(),
 	preprocess: [
 		vitePreprocess(),
-		mdsvex(mdsvexOptions),
 		sveltePreprocess({
 			// postcss make use of tailwind
 			// we ensure it get processed, see postcss.config.cjs

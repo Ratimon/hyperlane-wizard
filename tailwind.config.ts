@@ -70,15 +70,15 @@ const config = {
 			// 'emerald',
 			// 'corporate',
 			// 'synthwave',
-			// 'retro',
+			'retro',
 			// 'cyberpunk',
 			// 'valentine',
-			{
-				cyberpunk: {
-				  ...require("daisyui/src/theming/themes")["cyberpunk"],
-				  "base-100": "#E0A3B7",
-				},
-			},
+			// {
+			// 	cyberpunk: {
+			// 	  ...require("daisyui/src/theming/themes")["cyberpunk"],
+			// 	  "base-100": "#E0A3B7",
+			// 	},
+			// },
 			// 'halloween',
 			// 'garden',
 			// 'forest',

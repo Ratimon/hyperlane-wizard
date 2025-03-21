@@ -21,7 +21,7 @@ npx sv create <project_name>
 - pnpm
 
 ```bash
-pnpm add -D daisyui@4.12.22 svelte-preprocess
+pnpm add -D daisyui@4.12.22 svelte-preprocess  autoprefixer
 ```
 
 ## Developing
