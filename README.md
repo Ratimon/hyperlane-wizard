@@ -4,14 +4,24 @@ Everything you need to build a Svelte project, powered by [`sv`](https://github.
 
 ## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
-# create a new project in the current directory
-npx sv create
+npx sv create <project_name>
+```
 
-# create a new project in my-app
-npx sv create my-app
+>[!NOTE]
+> For who want to scaffolding their own svelte project
+
+>[!TIP]
+> We, when scaffolding, use following options :
+- SvelteKit minimal
+- Yes, using Typescript syntax
+- tailwindcss, mdsvex
+- typography, forms
+- pnpm
+
+```bash
+pnpm add -D daisyui@4.12.22 svelte-preprocess
 ```
 
 ## Developing

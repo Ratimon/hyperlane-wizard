@@ -6,6 +6,15 @@ const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
 	preprocess: vitePreprocess(),
+	preprocess: [
+		vitePreprocess(),
+		mdsvex(mdsvexOptions),
+		sveltePreprocess({
+			// postcss make use of tailwind
+			// we ensure it get processed, see postcss.config.cjs
+			postcss: true,
+		}),
+	],
 
 	kit: {
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
