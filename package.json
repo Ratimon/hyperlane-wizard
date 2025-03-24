@@ -33,6 +33,9 @@
 	},
 	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
 	"dependencies": {
-		"autoprefixer": "^10.4.21"
+		"autoprefixer": "^10.4.21",
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.0.2",
+		"tailwind-variants": "^1.0.0"
 	}
 }
