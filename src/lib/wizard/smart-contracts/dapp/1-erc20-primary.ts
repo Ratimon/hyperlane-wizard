@@ -1,7 +1,7 @@
 import { ContractBuilder } from '../contract';
 
-import { withDefaults, defaults as commonDefaults } from "../../shared/dapp/1-option-erc20-primary";
-import type { SharedERC20PrimaryOptions } from "../../shared/dapp/1-option-erc20-primary";
+import { withDefaults, defaults as commonDefaults } from "../../shared/dapp/1-option-erc20";
+import type { SharedERC20Options } from "../../shared/dapp/1-option-erc20";
 
 import type { AccessOZ } from '../set-access-control';
 import { setAccessControlOZ, requireAccessControlOZ } from '../set-access-control';
@@ -21,18 +21,18 @@ import { OptionsError } from '../../shared/error';
 // export const crossChainBridgingOptions = [false, 'custom', 'superchain'] as const;
 // export type CrossChainBridging = (typeof crossChainBridgingOptions)[number];
 
-// SharedERC20PrimaryOptions
+// SharedERC20Options
 
 
-export function printERC20Primary(opts: SharedERC20PrimaryOptions = commonDefaults): string {
-  return printContract(buildERC20Primary(opts));
+export function printERC20(opts: SharedERC20Options = commonDefaults): string {
+  return printContract(buildERC20(opts));
 }
 
-export function isAccessControlRequired(opts: Partial<SharedERC20PrimaryOptions>): boolean {
+export function isAccessControlRequired(opts: Partial<SharedERC20Options>): boolean {
   return opts.mintable || opts.pausable || opts.upgradeable === 'uups';
 }
 
-export function buildERC20Primary(opts: SharedERC20PrimaryOptions): ContractBuilder {
+export function buildERC20(opts: SharedERC20Options): ContractBuilder {
   const allOpts = withDefaults(opts);
 
   const c = new ContractBuilder(allOpts.name);

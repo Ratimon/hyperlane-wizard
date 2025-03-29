@@ -31,7 +31,7 @@ export function withCommonDefaults(opts: CommonOptions): Required<CommonOptions>
 }
 
 
-export interface SharedERC20PrimaryOptions extends CommonOptions {
+export interface SharedERC20Options extends CommonOptions {
     name: string;
     symbol: string;
     burnable?: boolean;
@@ -49,7 +49,7 @@ export interface SharedERC20PrimaryOptions extends CommonOptions {
   //   crossChainBridging?: CrossChainBridging;
 }
   
-  export const defaults: Required<SharedERC20PrimaryOptions> = {
+  export const defaults: Required<SharedERC20Options> = {
     name: 'MyToken',
     symbol: 'MTK',
     burnable: false,
@@ -70,7 +70,7 @@ export interface SharedERC20PrimaryOptions extends CommonOptions {
     testInfo: commonDefaults.testInfo,
   } as const;
   
-  export function withDefaults(opts: SharedERC20PrimaryOptions): Required<SharedERC20PrimaryOptions> {
+  export function withDefaults(opts: SharedERC20Options): Required<SharedERC20Options> {
     return {
       ...opts,
       ...withCommonDefaults(opts),

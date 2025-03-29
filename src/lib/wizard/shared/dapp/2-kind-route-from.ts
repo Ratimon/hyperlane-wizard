@@ -1,17 +1,17 @@
-import type { GenericERC20Options } from './build-generic';
+import type { GenericContractFromOptions } from '../build-generic';
 
-export type Kind = GenericERC20Options['kind'];
+export type KindContractFrom = GenericContractFromOptions['kind'];
 
-export function sanitizeKind(kind: unknown): Kind {
+export function sanitizeKindContractFrom(kind: unknown): KindContractFrom {
   if (typeof kind === 'string') {
-    if (isKind(kind)) {
+    if (isKindContractFrom(kind)) {
       return kind;
     }
   }
-  return 'ERC20';
+  return 'HypERC20Collateral';
 }
 
-function isKind<T>(value: Kind | T): value is Kind {
+function isKindContractFrom<T>(value: KindContractFrom | T): value is KindContractFrom {
   switch (value) {
     case 'HypERC20Collateral':
       return true;
@@ -25,14 +25,16 @@ function isKind<T>(value: Kind | T): value is Kind {
       return true;
     case 'FastHypERC20Collateral':
       return true;
-
     case 'HypXERC20':
       return true;
     case 'HypXERC20Lockbox':
       return true;
-
-    case 'ERC20':
+    
+    case 'HypERC20':
       return true;
+    case 'FastHypERC20':
+      return true;
+
 
     default: {
       // Static assert that we've checked all kinds.
