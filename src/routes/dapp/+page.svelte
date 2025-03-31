@@ -14,6 +14,7 @@
       KindTo,
       OptionsErrorMessages
     } from '$lib/wizard/shared';
+
     import { 
       sanitizeKindERC20,
       OptionsError,
@@ -22,6 +23,9 @@
       sanitizeKind
     } from '$lib/wizard/shared';
 
+    import {icons} from '$data/icon';
+
+    import AbstractIcon from '$lib/ui/icons/AbstractIcon.svelte';
     import Background from '$lib/ui/layouts/Background.svelte';
     import Button from "$lib/ui/buttons/Button.svelte";
     // import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
@@ -240,57 +244,86 @@
 </Background>
 
 
-{#if warpRouteState.state === 'SettingUproute' || warpRouteState.state === 'SettingTokens'}
+<div class="container flex flex-col gap-4 p-8 mx-8">
 
-  <fieldset class="fieldset">
+  {#if warpRouteState.state === 'SettingUproute' || warpRouteState.state === 'SettingTokens'}
+
     <legend class="fieldset-legend">Routes:</legend>
+    <fieldset class="fieldset">
 
-    <select class="select"
-      bind:value={warpRouteState.route}
-      onchange={() => selectRoute(warpRouteState)}
-    >
-      <option disabled selected>Pick a route</option>
-      <option>Collateral to Synthetic</option>
-      <option>xERC20 Routes</option>
-    </select>
+      <select class="select select-md"
+        bind:value={warpRouteState.route}
+        onchange={() => selectRoute(warpRouteState)}
+      >
+        <option disabled selected>Pick a route</option>
+        <option>Collateral to Synthetic</option>
+        <option>xERC20 Routes</option>
+      </select>
 
-  </fieldset>
-{/if}
-
-{#if warpRouteState.state === 'SettingTokens'}
-
-  <details class="dropdown">
-
-    <summary class="btn m-1">{initialContractFromTab}</summary>
-      <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-
-        {#each contractFromListsFiltered as contract}
-          <li>
-            <button onclick={() => selectTokenFrom(contract.name)}>
-              {contract.label}
-            </button>
-          </li>
-        {/each}
-    </ul>
-  </details>
-
-  <details class="dropdown">
-
-    <summary class="btn m-1">{initialContractToTab}</summary>
-    <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-
-      {#each contractToListsFiltered as contract}
-        <li>
-          <button onclick={() => selectTokenTo(contract.name)}>
-            {contract.label}
-          </button>
-        </li>
-      {/each}
-    </ul>
-  </details>
-{/if}
+    </fieldset>
 
 
+  {/if}
+
+  {#if warpRouteState.state === 'SettingTokens'}
+
+    <div class="flex flex-row justify-between grow gap-4">
+
+      <div class="flex flex-col gap-4">
+
+        Select Token on origin chain:
+
+        <details class="dropdown dropdown-right">
+          <summary class="btn m-1">
+            {initialContractFromTab}
+            <AbstractIcon name={icons.MenuDown.name} width="24" height="24" />
+          </summary>
+            <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+    
+              {#each contractFromListsFiltered as contract}
+                <li>
+                  <button onclick={() => selectTokenFrom(contract.name)}>
+                    {contract.label}
+                   
+                  </button>
+                </li>
+              {/each}
+          </ul>
+        </details>
+
+      </div>
+
+
+      <div class="flex flex-col gap-4">
+
+        Select Token on destination chain:
+
+        <details class="dropdown dropdown-left">
+          <summary class="btn m-1">
+            <AbstractIcon name={icons.MenuDown.name} width="24" height="24" />
+            {initialContractToTab}
+          </summary>
+    
+          <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+    
+            {#each contractToListsFiltered as contract}
+              <li>
+                <button onclick={() => selectTokenTo(contract.name)}>
+                  {contract.label}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        </details>
+        
+      </div>
+    
+    
+    </div>
+
+  {/if}
+
+</div>
 
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[1].pathname}>
@@ -325,6 +358,13 @@
 </WizardSingle>
 
 <style lang="postcss">
+
+  .container {
+      background-color: var(--gray-1);
+      border: 1px solid var(--gray-2);
+      border-radius: 10px;
+      min-width: 32rem;
+  }
 
   .tab {
     color: var(--gray-5);
