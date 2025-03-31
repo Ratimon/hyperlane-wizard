@@ -27,7 +27,7 @@
   // import { analyticsStore } from '$lib/analytics/analytics.Store';
 
   type Props = {
-    guide: Snippet;
+    // guide: Snippet;
     menu: Snippet;
     control: Snippet;
     // contractInstance: Contract | DeployContract | TestContract;
@@ -39,7 +39,7 @@
   };
 
   let {
-    guide,
+    // guide,
     menu,
     control,
     contractInstance,

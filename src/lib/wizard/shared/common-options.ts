@@ -24,6 +24,13 @@ export const defaults: Required<CommonOptions> = {
 } as const;
 
 
+// export const defaultsOnlyContract: Partial<CommonOptions> = {
+//   access: false,
+//   upgradeable: false,
+//   contractInfo: infoDefaults,
+// } as const;
+
+
 export interface CommonOptions {
   access?: Access;
   upgradeable?: Upgradeable;

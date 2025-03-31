@@ -13,26 +13,26 @@ import type { SharedERC20Options} from './dapp/1-option-erc20';
 import type { SharedFastHypERC20Options } from './dapp/2-option-fast-hyp-erc20';
 
 
-export interface KindedContractFromOptions {
+export interface KindedFromOptions {
     HypERC20Collateral: { kind: 'HypERC20Collateral' } & SharedHypERC20CollateralOptions;
-    FastHypERC20Collateral: { kind: 'FastHypERC20Collateral' } & SharedFastHypERC20CollateralOptions;
-    HypERC4626Collateral: { kind: 'HypERC4626Collateral' } & SharedHypERC4626CollateralOptions;
-    HypERC4626OwnerCollateral: { kind: 'HypERC4626OwnerCollateral' } & SharedHypERC4626OwnerCollateralOptions;
-    HypFiatToken: { kind: 'HypFiatToken' } & SharedHypFiatTokenOptions;
-    // HypERC20: { kind: 'HypERC20' } & SharedERC20Options;
-    // FastHypERC20: { kind: 'FastHypERC20Collateral' } & SharedFastHypERC20CollateralOptions;
-    HypXERC20: { kind: 'HypXERC20' } & SharedHypXERC20Options;
-    HypXERC20Lockbox: { kind: 'HypXERC20Lockbox' } & SharedHypXERC20LockboxOptions;
+    // FastHypERC20Collateral: { kind: 'FastHypERC20Collateral' } & SharedFastHypERC20CollateralOptions;
+    // HypERC4626Collateral: { kind: 'HypERC4626Collateral' } & SharedHypERC4626CollateralOptions;
+    // HypERC4626OwnerCollateral: { kind: 'HypERC4626OwnerCollateral' } & SharedHypERC4626OwnerCollateralOptions;
+    // HypFiatToken: { kind: 'HypFiatToken' } & SharedHypFiatTokenOptions;
+    // // HypERC20: { kind: 'HypERC20' } & SharedERC20Options;
+    // // FastHypERC20: { kind: 'FastHypERC20Collateral' } & SharedFastHypERC20CollateralOptions;
+    // HypXERC20: { kind: 'HypXERC20' } & SharedHypXERC20Options;
+    // HypXERC20Lockbox: { kind: 'HypXERC20Lockbox' } & SharedHypXERC20LockboxOptions;
 }
-export type GenericContractFromOptions = KindedContractFromOptions[keyof KindedContractFromOptions];
+export type GenericFromOptions = KindedFromOptions[keyof KindedFromOptions];
 
-export interface KindedContractToOptions {
+export interface KindedToOptions {
     HypERC20: { kind: 'HypERC20' } & SharedHypERC20Options;
     FastHypERC20: { kind: 'FastHypERC20' } & SharedFastHypERC20Options;
     HypXERC20: { kind: 'HypXERC20' } & SharedHypXERC20Options;
     HypXERC20Lockbox: { kind: 'HypXERC20Lockbox' } & SharedHypXERC20LockboxOptions;
 }
-export type GenericContractToOptions = KindedContractToOptions[keyof KindedContractToOptions];
+export type GenericToOptions = KindedToOptions[keyof KindedToOptions];
 
 
 export interface KindedERC20Options {

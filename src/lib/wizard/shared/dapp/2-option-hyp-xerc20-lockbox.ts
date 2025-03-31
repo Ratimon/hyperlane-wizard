@@ -30,11 +30,11 @@ export function withCommonDefaults(opts: CommonOptions): Required<CommonOptions>
 
 
 export interface SharedHypXERC20LockboxOptions extends CommonOptions {
-    name: string;
+    contractName: string;
 }
   
 export const defaults: Required<SharedHypXERC20LockboxOptions> = {
-    name: 'SharedHypXERC20Lockbox',
+    contractName: 'SharedHypXERC20Lockbox',
 
     access: commonDefaults.access,
     upgradeable: commonDefaults.upgradeable,

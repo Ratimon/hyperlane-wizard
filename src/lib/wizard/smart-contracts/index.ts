@@ -15,7 +15,7 @@ export type { Info } from './set-info';
 export { defaults as contractInfoDefaults } from './set-info';
 
 export {
-    erc20Primary,
+    erc20,
 } from './api';
 
-export { buildERC20Primary } from './dapp/1-erc20-primary';
+export { buildERC20 } from './dapp/1-erc20-primary';

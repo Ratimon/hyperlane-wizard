@@ -30,11 +30,11 @@ export function withCommonDefaults(opts: CommonOptions): Required<CommonOptions>
 
 
 export interface SharedHypERC4626CollateralOptions extends CommonOptions {
-    name: string;
+    contractName: string;
 }
   
 export const defaults: Required<SharedHypERC4626CollateralOptions> = {
-    name: 'HypERC4626Collateral',
+    contractName: 'HypERC4626Collateral',
 
     access: commonDefaults.access,
     upgradeable: commonDefaults.upgradeable,

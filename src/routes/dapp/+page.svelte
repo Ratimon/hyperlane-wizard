@@ -1,4 +1,4 @@
-<script  lang="ts">
+<script lang="ts">
     import type { PageData } from "./$types";
     import type {Link } from '$lib/model/Link';
 
@@ -8,17 +8,17 @@
     import type {
       KindedERC20Options,
       KindERC20,
-      KindedContractFromOptions,
-      KindedContractToOptions,
-      KindContractFrom,
-      KindContractTo,
+      KindedFromOptions,
+      KindedToOptions,
+      KindFrom,
+      KindTo,
       OptionsErrorMessages
     } from '$lib/wizard/shared';
     import { 
       sanitizeKindERC20,
       OptionsError,
-      sanitizeKindContractFrom,
-      sanitizeKindContractTo,
+      sanitizeKindFrom,
+      sanitizeKindTo,
       sanitizeKind
     } from '$lib/wizard/shared';
 
@@ -26,7 +26,9 @@
     import Button from "$lib/ui/buttons/Button.svelte";
     // import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
     import ScrollStep from '$lib/ui/components/ScrollStep.svelte';
-
+    import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
+    import OverflowMenu from '$lib/ui/layouts/OverflowMenu.svelte';
+    import ERC20ContractControls from '$lib/ui/controls/ERC20ContractControls.svelte';
 
     type Props = {
         data: PageData;
@@ -48,7 +50,6 @@
     const optsPrimaryToken = $derived(allOptsPrimaryToken[contractPrimaryTokenTab]);
 
     let errorsPrimaryToken : { [k in KindERC20]?: OptionsErrorMessages } =  $state({});
-
 
     $effect(() => {
       if (optsPrimaryToken) {
@@ -106,31 +107,8 @@
     }
 
     function selectTokenTo(contractName: string) {
-      // warpRouteState.tokenTo = token;
       initialContractToTab = contractName
     }
-
-
-  // let routeSelected : Route = $state('Pick a route');
-  // let disabledSteps: boolean = $derived(warpRouteState.route === 'Pick a route');
-
-  // $effect(() => {
-  //   if (warpRouteState.route !== 'Pick a route') {
-  //     try {
-  //       // contract = buildContractGeneric(opts);
-  //       //   deployContract = buildDeployGeneric(opts);
-  //       //   testContract = buildTestGeneric(opts);
-
-  //       errors[contractTab] = undefined;
-  //     } catch (e: unknown) {
-  //       if (e instanceof OptionsError) {
-  //           errors[contractTab] = e.messages;
-  //       } else {
-  //       throw e;
-  //       }
-  //     }
-  //   }
-  // });
 
   let contractFromLists = [
     {
@@ -176,7 +154,31 @@
   )
 
   let initialContractFromTab: string | undefined = $state(undefined);
-  let contractFromTab : KindContractFrom = $derived(sanitizeKindContractFrom(initialContractFromTab));
+  let contractFromTab : KindFrom = $derived(sanitizeKindFrom(initialContractFromTab));
+  let allOptsFrom: { [k in KindFrom]?: Required<KindedFromOptions [k]> } =  $state({});
+
+  let contractFrom: Contract = $state(new ContractBuilder('HypERC20Collateral'));
+  const optsContractFrom = $derived(allOptsFrom[contractFromTab]);
+
+  let errorsContractFrom : { [k in KindFrom]?: OptionsErrorMessages } =  $state({});
+
+  $effect(() => {
+      if (optsContractFrom) {
+        try {
+          contractFrom = buildContractGeneric(optsContractFrom) as Contract;
+        //   deployContract = buildDeployGeneric(opts);
+        //   testContract = buildTestGeneric(opts);
+
+          errorsPrimaryToken[contractPrimaryTokenTab] = undefined;
+        } catch (e: unknown) {
+          if (e instanceof OptionsError) {
+              errorsPrimaryToken[contractPrimaryTokenTab] = e.messages;
+          } else {
+          throw e;
+          }
+        }
+      }
+    });
 
 
   let contractToLists = [
@@ -208,12 +210,10 @@
 
 
   let initialContractToTab: string | undefined = $state(undefined);
-  let contractToTab : KindContractTo = $derived(sanitizeKindContractTo(initialContractToTab));
+  let contractToTab : KindTo = $derived(sanitizeKindTo(initialContractToTab));
 
 
 </script>
-
-
 
 <section class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-4 lg:py-10">
       
@@ -254,7 +254,6 @@
       <option>xERC20 Routes</option>
     </select>
 
-    <!-- <span class="fieldset-label">Optional</span> -->
   </fieldset>
 {/if}
 
@@ -272,27 +271,6 @@
             </button>
           </li>
         {/each}
-  <!-- 
-      <li>
-        <button onclick={() => initialContractFromTab = 'HypERC20Collateral'}>
-          HypERC20Collateral.sol
-        </button>
-      </li>
-      <li>
-        <button onclick={() => initialContractFromTab = 'HypFiatToken'}>
-          HypFiatToken.sol
-        </button>
-      </li>
-      <li>
-        <button onclick={() => initialContractFromTab = 'HypERC4626OwnerCollateral'}>
-          HypERC4626OwnerCollateral
-        </button>
-      </li>
-      <li>
-        <button onclick={() => initialContractFromTab = 'FastHypERC20Collateral'}>
-          FastHypERC20Collateral
-        </button>
-      </li> -->
     </ul>
   </details>
 
@@ -308,18 +286,6 @@
           </button>
         </li>
       {/each}
-
-      <!-- <li >
-        <button onclick={() => initialContractToTab = 'HypERC20'}>
-          HypERC20.sol
-        </button>
-      </li>
-      <li>
-        <button onclick={() => initialContractToTab = 'FastHypERC20'}>
-          FastHypERC20.sol
-        </button>
-      </li> -->
-      
     </ul>
   </details>
 {/if}
@@ -334,3 +300,69 @@
   </section>
 </Background>
 
+<WizardSingle initialContractTab={initialContractPrimaryTokenTab} contractTab={contractPrimaryTokenTab} opts={optsPrimaryToken} contractInstance={contractPrimaryToken}>
+
+  {#snippet menu()}
+    <div class="tab overflow-hidden">
+      <Background color="bg-base-200">
+        <OverflowMenu>
+          <button class:selected={contractPrimaryTokenTab === 'ERC20'} onclick={() => initialContractPrimaryTokenTab = 'ERC20'}>
+            ERC20
+          </button>    
+        </OverflowMenu>
+      </Background>
+    </div>
+  {/snippet}
+
+  {#snippet control()}
+    <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto">
+      <div class:hidden={contractPrimaryTokenTab !== 'ERC20'}>
+          <ERC20ContractControls bind:opts={allOptsPrimaryToken.ERC20!}/>
+      </div>
+    </div>
+  {/snippet}
+
+</WizardSingle>
+
+<style lang="postcss">
+
+  .tab {
+    color: var(--gray-5);
+  }
+
+  .tab button, :global(.overflow-btn) {
+    padding: var(--size-1) var(--size-2);
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .tab button, :global(.overflow-btn) {
+    border: 0;
+    background-color: transparent;
+  }
+
+  .tab button:hover, :global(.overflow-btn):hover {
+    background-color: var(--gray-2);
+  }
+
+  .tab button.selected {
+    background-color: var(--solidity-blue-2);
+    color: white;
+    order: -1;
+  }
+
+  :global(.overflow-menu) button.selected {
+    order: unset;
+  }
+
+  .controls {
+    background-color: white;
+    padding: var(--size-4);
+  }
+
+  .controls {
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+  }
+</style>

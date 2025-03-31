@@ -18,12 +18,6 @@ import { supportsInterface } from '../common-functions';
 import { OptionsError } from '../../shared/error';
 
 
-// export const crossChainBridgingOptions = [false, 'custom', 'superchain'] as const;
-// export type CrossChainBridging = (typeof crossChainBridgingOptions)[number];
-
-// SharedERC20Options
-
-
 export function printERC20(opts: SharedERC20Options = commonDefaults): string {
   return printContract(buildERC20(opts));
 }
@@ -35,11 +29,11 @@ export function isAccessControlRequired(opts: Partial<SharedERC20Options>): bool
 export function buildERC20(opts: SharedERC20Options): ContractBuilder {
   const allOpts = withDefaults(opts);
 
-  const c = new ContractBuilder(allOpts.name);
+  const c = new ContractBuilder(allOpts.contractName);
 
   const { access, upgradeable, contractInfo } = allOpts;
 
-  addBase(c, allOpts.name, allOpts.symbol);
+  addBase(c, allOpts.contractName, allOpts.tokenSymbol);
 
 //   if (allOpts.crossChainBridging) {
 //     addCrossChainBridging(c, allOpts.crossChainBridging, allOpts.upgradeable, access);
@@ -64,7 +58,7 @@ export function buildERC20(opts: SharedERC20Options): ContractBuilder {
 
   // Note: Votes requires Permit
   if (allOpts.permit || allOpts.votes) {
-    addPermit(c, allOpts.name);
+    addPermit(c, allOpts.contractName);
   }
 
   if (allOpts.votes) {

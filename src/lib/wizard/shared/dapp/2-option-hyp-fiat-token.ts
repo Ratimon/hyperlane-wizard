@@ -30,11 +30,11 @@ export function withCommonDefaults(opts: CommonOptions): Required<CommonOptions>
 
 
 export interface SharedHypFiatTokenOptions extends CommonOptions {
-    name: string;
+    contractName: string;
 }
   
 export const defaults: Required<SharedHypFiatTokenOptions> = {
-    name: 'HypFiatToken',
+    contractName: 'HypFiatToken',
 
     access: commonDefaults.access,
     upgradeable: commonDefaults.upgradeable,

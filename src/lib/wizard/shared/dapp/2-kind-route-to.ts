@@ -1,17 +1,17 @@
-import type { GenericContractToOptions } from '../build-generic';
+import type { GenericToOptions } from '../build-generic';
 
-export type KindContractTo = GenericContractToOptions['kind'];
+export type KindTo = GenericToOptions['kind'];
 
-export function sanitizeKindContractTo(kind: unknown): KindContractTo {
+export function sanitizeKindTo(kind: unknown): KindTo {
   if (typeof kind === 'string') {
-    if (isKindContractTo(kind)) {
+    if (isKindTo(kind)) {
       return kind;
     }
   }
   return 'HypERC20';
 }
 
-function isKindContractTo<T>(value: KindContractTo | T): value is KindContractTo {
+function isKindTo<T>(value: KindTo | T): value is KindTo {
   switch (value) {
     case 'HypERC20':
       return true;

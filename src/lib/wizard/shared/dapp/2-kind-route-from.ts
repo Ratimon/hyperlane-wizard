@@ -1,39 +1,39 @@
-import type { GenericContractFromOptions } from '../build-generic';
+import type { GenericFromOptions } from '../build-generic';
 
-export type KindContractFrom = GenericContractFromOptions['kind'];
+export type KindFrom = GenericFromOptions['kind'];
 
-export function sanitizeKindContractFrom(kind: unknown): KindContractFrom {
+export function sanitizeKindFrom(kind: unknown): KindFrom {
   if (typeof kind === 'string') {
-    if (isKindContractFrom(kind)) {
+    if (isKindFrom(kind)) {
       return kind;
     }
   }
   return 'HypERC20Collateral';
 }
 
-function isKindContractFrom<T>(value: KindContractFrom | T): value is KindContractFrom {
+function isKindFrom<T>(value: KindFrom | T): value is KindFrom {
   switch (value) {
     case 'HypERC20Collateral':
       return true;
-    case 'HypERC4626Collateral':
-      return true;
-    case 'HypFiatToken':
-      return true;
-    case 'HypERC4626OwnerCollateral':
-      return true;
-    case 'HypERC20':
-      return true;
-    case 'FastHypERC20Collateral':
-      return true;
-    case 'HypXERC20':
-      return true;
-    case 'HypXERC20Lockbox':
-      return true;
+    // case 'HypERC4626Collateral':
+    //   return true;
+    // case 'HypFiatToken':
+    //   return true;
+    // case 'HypERC4626OwnerCollateral':
+    //   return true;
+    // case 'HypERC20':
+    //   return true;
+    // case 'FastHypERC20Collateral':
+    //   return true;
+    // case 'HypXERC20':
+    //   return true;
+    // case 'HypXERC20Lockbox':
+    //   return true;
     
-    case 'HypERC20':
-      return true;
-    case 'FastHypERC20':
-      return true;
+    // case 'HypERC20':
+    //   return true;
+    // case 'FastHypERC20':
+    //   return true;
 
 
     default: {
