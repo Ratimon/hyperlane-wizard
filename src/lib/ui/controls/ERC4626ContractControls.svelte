@@ -7,7 +7,7 @@
     // import UpgradeabilitySection from '$lib/ui/controls/UpgradeabilitySection.svelte';
 
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
-    import type { KindedPrimaryTokenOptions } from '$lib/wizard/shared';
+    import type { KindedPrimaryTokenFromOptions } from '$lib/wizard/shared';
   
     import { erc4626 } from '$lib/wizard/smart-contracts';
     // import { deployERC4626 } from '$lib/wizard/deploy-scripts';
@@ -17,7 +17,7 @@
     // const deployDefaults = deployERC4626Votes.defaults;
 
     type Props = {
-      opts: Required<KindedPrimaryTokenOptions['ERC4626']>;
+      opts: Required<KindedPrimaryTokenFromOptions['ERC4626']>;
     };
 
     let {

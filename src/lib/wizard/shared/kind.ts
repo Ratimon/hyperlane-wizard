@@ -1,6 +1,6 @@
-import type { GenericPrimaryTokenOptions } from './build-generic';
+import type { GenericPrimaryTokenFromOptions } from './build-generic';
 
-export type Kind = GenericPrimaryTokenOptions['kind'];
+export type Kind = GenericPrimaryTokenFromOptions['kind'];
 
 export function sanitizeKind(kind: unknown): Kind {
   if (typeof kind === 'string') {

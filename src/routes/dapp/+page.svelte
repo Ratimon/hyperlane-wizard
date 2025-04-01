@@ -6,8 +6,8 @@
     import { ContractBuilder, buildContractGeneric } from '$lib/wizard/smart-contracts';
 
     import type {
-      KindedPrimaryTokenOptions,
-      KindPrimaryToken,
+      KindedPrimaryTokenFromOptions,
+      KindPrimaryTokenFrom,
       KindedFromOptions,
       KindedToOptions,
       KindFrom,
@@ -16,7 +16,7 @@
     } from '$lib/wizard/shared';
 
     import { 
-      sanitizeKindPrimaryToken,
+      sanitizeKindPrimaryTokenFrom,
       OptionsError,
       sanitizeKindFrom,
       sanitizeKindTo,
@@ -44,29 +44,29 @@
     const stepLinks : Link[] = [
         {pathname: '#1-select-routes', title: 'Select Routes', navType: 'scroll' },
         {pathname: '#2-primary-erc20', title: 'Deploy Primary ERC20', navType: 'scroll' },
-        {pathname: '#3-deploy', title: 'Deploy', navType: 'scroll'},
+        {pathname: '#3-visualize', title: 'Visualize Bridge Flow', navType: 'scroll'},
     ];
 
-    let initialContractPrimaryTokenTab: string | undefined = $state('MyERC20');
-    let contractPrimaryTokenTab: KindPrimaryToken = $derived(sanitizeKindPrimaryToken(initialContractPrimaryTokenTab));
-    let allOptsPrimaryToken: { [k in KindPrimaryToken]?: Required<KindedPrimaryTokenOptions [k]> } =  $state({});
+    let initialContractPrimaryTokenFromTab: string | undefined = $state('MyERC20');
+    let contractPrimaryTokenFromTab: KindPrimaryTokenFrom = $derived(sanitizeKindPrimaryTokenFrom(initialContractPrimaryTokenFromTab));
+    let allOptsPrimaryTokenFrom: { [k in KindPrimaryTokenFrom]?: Required<KindedPrimaryTokenFromOptions [k]> } =  $state({});
 
-    let contractPrimaryToken: Contract = $state(new ContractBuilder('MyPrimaryToken'));
-    const optsPrimaryToken = $derived(allOptsPrimaryToken[contractPrimaryTokenTab]);
+    let contractPrimaryTokenFrom: Contract = $state(new ContractBuilder('MyPrimaryToken'));
+    const optsPrimaryTokenFrom = $derived(allOptsPrimaryTokenFrom[contractPrimaryTokenFromTab]);
 
-    let errorsPrimaryToken : { [k in KindPrimaryToken]?: OptionsErrorMessages } =  $state({});
+    let errorsPrimaryTokenFrom : { [k in KindPrimaryTokenFrom]?: OptionsErrorMessages } =  $state({});
 
     $effect(() => {
-      if (optsPrimaryToken) {
+      if (optsPrimaryTokenFrom) {
         try {
-          contractPrimaryToken = buildContractGeneric(optsPrimaryToken) as Contract;
+          contractPrimaryTokenFrom = buildContractGeneric(optsPrimaryTokenFrom) as Contract;
         //   deployContract = buildDeployGeneric(opts);
         //   testContract = buildTestGeneric(opts);
 
-          errorsPrimaryToken[contractPrimaryTokenTab] = undefined;
+          errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = undefined;
         } catch (e: unknown) {
           if (e instanceof OptionsError) {
-              errorsPrimaryToken[contractPrimaryTokenTab] = e.messages;
+              errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = e.messages;
           } else {
           throw e;
           }
@@ -189,10 +189,10 @@
         //   deployContract = buildDeployGeneric(opts);
         //   testContract = buildTestGeneric(opts);
 
-          errorsPrimaryToken[contractPrimaryTokenTab] = undefined;
+          errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = undefined;
         } catch (e: unknown) {
           if (e instanceof OptionsError) {
-              errorsPrimaryToken[contractPrimaryTokenTab] = e.messages;
+              errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = e.messages;
           } else {
           throw e;
           }
@@ -205,7 +205,7 @@
   $effect(() => {
     if (initialContractFromTab) {
       contactFromPrimaryStandard = contractFromLists.find(contract => contract.name === initialContractFromTab)?.primaryToken ?? ''
-      initialContractPrimaryTokenTab = contactFromPrimaryStandard
+      initialContractPrimaryTokenFromTab = contactFromPrimaryStandard
     }
   })
 
@@ -245,9 +245,9 @@
   let contractToTab : KindTo = $derived(sanitizeKindTo(initialContractToTab));
 
 
-  function comfirmRoute( primaryToken: string ) {
+  function comfirmFromRoute( primaryToken: string ) {
     warpRouteState.state = 'DeployingPrimaryToken'
-    initialContractPrimaryTokenTab = primaryToken;
+    initialContractPrimaryTokenFromTab = primaryToken;
   }
 
   let isPrimaryTokenDeployed: boolean = $state(true);
@@ -270,7 +270,6 @@
 
 </section>
 
-<ScrollStep links={stepLinks} titleHighlighted={stepLinks[0].title} />
 
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[0].pathname}>
@@ -379,7 +378,7 @@
           variant="default"
           class="button block"
           type="submit"
-          onclick={() => comfirmRoute(contactFromPrimaryStandard)}
+          onclick={() => comfirmFromRoute(contactFromPrimaryStandard)}
       >
          Confirm this Route
       </Button>
@@ -390,7 +389,6 @@
 
 </div>
 
-
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[1].pathname}>
     <div class="divider divider-primary ">
@@ -400,6 +398,8 @@
     </div>
   </section>
 </Background>
+
+<ScrollStep links={stepLinks} titleHighlighted={stepLinks[1].title} />
 
 {#if warpRouteState.state !== 'DeployingPrimaryToken'}
 
@@ -413,93 +413,99 @@
 
 {:else}
 
-<!-- <div class="container flex flex-col gap-4 p-8 mx-8"> -->
-
   <div class="container flex flex-col items-center justify-center p-8 mx-8">
 
-    
-    <h2 class="font-semibold text-xl">
-      Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
-    </h2>
+    <!-- Source Chain -->
+    {#if contactFromPrimaryStandard === 'None'}
+      <h2 class="font-semibold text-xl">
+        No Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
+      </h2>
+    {:else}
+      <h2 class="font-semibold text-xl">
+        Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
+      </h2>
 
-    <div class="flex flex-row items-center gap-x-16 mx-8">
-      <!-- <div class="container flex flex-row justify-center items-center gap-x-16 p-8 mx-8 "> -->
+      <div class="flex flex-row items-center gap-x-16 mx-8">
+      
+        <h3 class="font-semibold text-xl">
+          The standard being deployed is:
+        </h3>
     
-      <h3 class="font-semibold text-xl">
-        The standard being deployed is:
-      </h3>
-  
-      <h3 class="font-semibold text-lg">
-        {contactFromPrimaryStandard}
-      </h3>
-  
-      <fieldset class="fieldset p-4 bg-base-100 border border-base-300 rounded-box w-80">
-        <legend class="fieldset-legend font-bold">
-          Have Not Deployed Yet? Uncheck below to start modifying!!
-        </legend>
-        <label class="fieldset-label">
-          <input type="checkbox" checked={isPrimaryTokenDeployed} class="checkbox" onclick={togglePrimaryTokenDeployed} />
-          A contract at source chain already deployed
+        <h3 class="font-semibold text-lg">
+          {contactFromPrimaryStandard}
+        </h3>
+    
+        <fieldset class="fieldset p-4 bg-base-100 border border-base-300 rounded-box w-80">
+          <legend class="fieldset-legend font-bold">
+            Have Not Deployed Yet? Uncheck below to start modifying!!
+          </legend>
+          <label class="fieldset-label">
+            <input type="checkbox" checked={isPrimaryTokenDeployed} class="checkbox" onclick={togglePrimaryTokenDeployed} />
+            A contract at source chain already deployed
+          </label>
+        </fieldset>
+
+        <label class="input input-xl validator">
+          <!-- <legend class="fieldset-legend">Put required address here</legend> -->
+          <input placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
         </label>
-      </fieldset>
-
-      <label class="input input-xl validator">
-        <!-- <legend class="fieldset-legend">Put required address here</legend> -->
-        <input placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
-      </label>
-      <p class="validator-hint hidden">
-        Must be in the format of 0x followed by 40 characters
-      </p>
+        <p class="validator-hint hidden">
+          Must be in the format of 0x followed by 40 characters
+        </p>
+          
+      </div>
+      
+      {#if !isPrimaryTokenDeployed}
+        <WizardSingle initialContractTab={initialContractPrimaryTokenFromTab} contractTab={contractPrimaryTokenFromTab} opts={optsPrimaryTokenFrom} contractInstance={contractPrimaryTokenFrom}>
+          {#snippet menu()}
+            <div class="tab overflow-hidden">
+              <Background color="bg-base-200">
+                <OverflowMenu>
+                  {#if contractPrimaryTokenFromTab === 'ERC20'}
+                    <button class:selected={contractPrimaryTokenFromTab === 'ERC20'} onclick={() => initialContractPrimaryTokenFromTab = 'ERC20'}>
+                      ERC20
+                    </button>
+                  {/if}
+                  {#if contractPrimaryTokenFromTab === 'ERC4626'}
+                    <button class:selected={contractPrimaryTokenFromTab === 'ERC4626'} onclick={() => initialContractPrimaryTokenFromTab = 'ERC4626'}>
+                      ERC4626
+                    </button>
+                  {/if}
+                </OverflowMenu>
+              </Background>
+            </div>
+          {/snippet}
         
-    </div>
+          {#snippet control()}
+            <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto">
     
-    {#if !isPrimaryTokenDeployed}
-      <WizardSingle initialContractTab={initialContractPrimaryTokenTab} contractTab={contractPrimaryTokenTab} opts={optsPrimaryToken} contractInstance={contractPrimaryToken}>
-  
-        {#snippet menu()}
-          <div class="tab overflow-hidden">
-            <Background color="bg-base-200">
-              <OverflowMenu>
-  
-                
-                {#if contractPrimaryTokenTab === 'ERC20'}
-                  <button class:selected={contractPrimaryTokenTab === 'ERC20'} onclick={() => initialContractPrimaryTokenTab = 'ERC20'}>
-                    ERC20
-                  </button>
-                {/if}
-  
-                {#if contractPrimaryTokenTab === 'ERC4626'}
-                  <button class:selected={contractPrimaryTokenTab === 'ERC4626'} onclick={() => initialContractPrimaryTokenTab = 'ERC4626'}>
-                    ERC4626
-                  </button>
-                {/if}
-  
-              </OverflowMenu>
-            </Background>
-          </div>
-        {/snippet}
-      
-        {#snippet control()}
-          <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto">
-  
-            {#if contractPrimaryTokenTab === 'ERC20'}
-              <div class:hidden={contractPrimaryTokenTab !== 'ERC20'}>
-                <ERC20ContractControls bind:opts={allOptsPrimaryToken.ERC20!}/>
-              </div>
-            {/if}
-  
-            {#if contractPrimaryTokenTab === 'ERC4626'}
-              <div class:hidden={contractPrimaryTokenTab !== 'ERC4626'}>
-                <ERC4626ContractControls bind:opts={allOptsPrimaryToken.ERC4626!}/>
-              </div>
-            {/if}
-            
-          </div>
-        {/snippet}
-      
-      </WizardSingle>
-  
+              {#if contractPrimaryTokenFromTab === 'ERC20'}
+                <div class:hidden={contractPrimaryTokenFromTab !== 'ERC20'}>
+                  <ERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC20!}/>
+                </div>
+              {/if}
+    
+              {#if contractPrimaryTokenFromTab === 'ERC4626'}
+                <div class:hidden={contractPrimaryTokenFromTab !== 'ERC4626'}>
+                  <ERC4626ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC4626!}/>
+                </div>
+              {/if}
+              
+            </div>
+          {/snippet}
+        
+        </WizardSingle>
+    
+      {/if}
+
     {/if}
+
+    <!-- Destination Chain -->
+
+
+
+
+
 
   </div>
 

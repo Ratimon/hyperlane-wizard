@@ -38,8 +38,8 @@ export interface KindedToOptions {
 export type GenericToOptions = KindedToOptions[keyof KindedToOptions];
 
 
-export interface KindedPrimaryTokenOptions {
+export interface KindedPrimaryTokenFromOptions {
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
     ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
 }
-export type GenericPrimaryTokenOptions = KindedPrimaryTokenOptions[keyof KindedPrimaryTokenOptions];
+export type GenericPrimaryTokenFromOptions = KindedPrimaryTokenFromOptions[keyof KindedPrimaryTokenFromOptions];

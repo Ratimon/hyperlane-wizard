@@ -1,17 +1,17 @@
-import type { GenericPrimaryTokenOptions } from '../build-generic';
+import type { GenericPrimaryTokenFromOptions } from '../build-generic';
 
-export type KindPrimaryToken = GenericPrimaryTokenOptions['kind'];
+export type KindPrimaryTokenFrom = GenericPrimaryTokenFromOptions['kind'];
 
-export function sanitizeKindPrimaryToken(kind: unknown): KindPrimaryToken {
+export function sanitizeKindPrimaryTokenFrom(kind: unknown): KindPrimaryTokenFrom {
   if (typeof kind === 'string') {
-    if (isKindPrimaryToken(kind)) {
+    if (isKindPrimaryTokenFrom(kind)) {
       return kind;
     }
   }
   return 'ERC20';
 }
 
-function isKindPrimaryToken<T>(value: KindPrimaryToken | T): value is KindPrimaryToken {
+function isKindPrimaryTokenFrom<T>(value: KindPrimaryTokenFrom | T): value is KindPrimaryTokenFrom {
   switch (value) {
     case 'ERC20':
       return true;

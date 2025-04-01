@@ -1,7 +1,7 @@
 export type {
     KindedFromOptions, GenericFromOptions,
     KindedToOptions, GenericToOptions,
-    KindedPrimaryTokenOptions, GenericPrimaryTokenOptions,
+    KindedPrimaryTokenFromOptions, GenericPrimaryTokenFromOptions,
 } from './build-generic';
 
 
@@ -22,5 +22,5 @@ export { sanitizeKindFrom } from './dapp/2-kind-route-from';
 export type { KindTo } from './dapp/2-kind-route-to';
 export { sanitizeKindTo } from './dapp/2-kind-route-to';
 
-export type { KindPrimaryToken } from './dapp/1-kind-primary';
-export { sanitizeKindPrimaryToken } from './dapp/1-kind-primary';
+export type { KindPrimaryTokenFrom } from './dapp/1-kind-primary';
+export { sanitizeKindPrimaryTokenFrom } from './dapp/1-kind-primary';
