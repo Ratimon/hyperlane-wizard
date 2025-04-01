@@ -85,7 +85,6 @@ function addPermit(c: ContractBuilder, name: string) {
     path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20Permit.sol',
   };
   c.addParent(ERC20Permit, [name]);
-//   c.addOverride(ERC20Permit, functions.nonces);
 }
 
 function addLimit(c: ContractBuilder, access: AccessOZ) {
@@ -93,105 +92,105 @@ function addLimit(c: ContractBuilder, access: AccessOZ) {
     requireAccessControlOZ(c, functions.setLockbox, access, 'SETTER', 'setter');
     c.addFunctionCode(`lockbox = _lockbox;
 
-    emit LockboxSet(_lockbox);`, functions.setLockbox);
+        emit LockboxSet(_lockbox);`, functions.setLockbox);
 
 
     requireAccessControlOZ(c, functions.setLimits, access, 'SETTER', 'setter');
     c.addFunctionCode(`if (_mintingLimit > (type(uint256).max / 2) || _burningLimit > (type(uint256).max / 2)) {
-      revert IXERC20_LimitsTooHigh();
-    }
+            revert IXERC20_LimitsTooHigh();
+        }
 
-    _changeMinterLimit(_bridge, _mintingLimit);
-    _changeBurnerLimit(_bridge, _burningLimit);
-    emit BridgeLimitsSet(_mintingLimit, _burningLimit, _bridge);`, functions.setLimits);
+        _changeMinterLimit(_bridge, _mintingLimit);
+        _changeBurnerLimit(_bridge, _burningLimit);
+        emit BridgeLimitsSet(_mintingLimit, _burningLimit, _bridge);`, functions.setLimits);
     
 
     requireAccessControlOZ(c, functions.mint, access, 'MINTER', 'minter');
     c.addFunctionCode(`_mintWithCaller(msg.sender, _user, _amount);`, functions.mint);
 
     c.addFunctionCode(`if (msg.sender != _user) {
-      _spendAllowance(_user, msg.sender, _amount);
-    }
-  
-    _burnWithCaller(msg.sender, _user, _amount);`, functions.burn);
+            _spendAllowance(_user, msg.sender, _amount);
+        }
+    
+        _burnWithCaller(msg.sender, _user, _amount);`, functions.burn);
 
     c.addFunctionCode(`_limit = bridges[_bridge].minterParams.maxLimit;`, functions.mintingMaxLimitOf);
 
     c.addFunctionCode(`_limit = bridges[_bridge].burnerParams.maxLimit;`, functions.burningMaxLimitOf);
 
     c.addFunctionCode(`_limit = _getCurrentLimit(
-      bridges[_bridge].minterParams.currentLimit,
-      bridges[_bridge].minterParams.maxLimit,
-      bridges[_bridge].minterParams.timestamp,
-      bridges[_bridge].minterParams.ratePerSecond
-    );`, functions.mintingCurrentLimitOf);
+        bridges[_bridge].minterParams.currentLimit,
+        bridges[_bridge].minterParams.maxLimit,
+        bridges[_bridge].minterParams.timestamp,
+        bridges[_bridge].minterParams.ratePerSecond
+        );`, functions.mintingCurrentLimitOf);
 
     c.addFunctionCode(`_limit = _getCurrentLimit(
-      bridges[_bridge].burnerParams.currentLimit,
-      bridges[_bridge].burnerParams.maxLimit,
-      bridges[_bridge].burnerParams.timestamp,
-      bridges[_bridge].burnerParams.ratePerSecond
-    );`, functions.burningCurrentLimitOf);
+        bridges[_bridge].burnerParams.currentLimit,
+        bridges[_bridge].burnerParams.maxLimit,
+        bridges[_bridge].burnerParams.timestamp,
+        bridges[_bridge].burnerParams.ratePerSecond
+        );`, functions.burningCurrentLimitOf);
 
     c.addFunctionCode(`uint256 _currentLimit = mintingCurrentLimitOf(_bridge);
-    bridges[_bridge].minterParams.timestamp = block.timestamp;
-    bridges[_bridge].minterParams.currentLimit = _currentLimit - _change;`, functions._useMinterLimits );
+        bridges[_bridge].minterParams.timestamp = block.timestamp;
+        bridges[_bridge].minterParams.currentLimit = _currentLimit - _change;`, functions._useMinterLimits );
 
     c.addFunctionCode(`uint256 _currentLimit = burningCurrentLimitOf(_bridge);
-    bridges[_bridge].burnerParams.timestamp = block.timestamp;
-    bridges[_bridge].burnerParams.currentLimit = _currentLimit - _change;`, functions._useBurnerLimits);
+        bridges[_bridge].burnerParams.timestamp = block.timestamp;
+        bridges[_bridge].burnerParams.currentLimit = _currentLimit - _change;`, functions._useBurnerLimits);
 
     c.addFunctionCode(`uint256 _oldLimit = bridges[_bridge].burnerParams.maxLimit;
-    uint256 _currentLimit = burningCurrentLimitOf(_bridge);
-    bridges[_bridge].burnerParams.maxLimit = _limit;
+        uint256 _currentLimit = burningCurrentLimitOf(_bridge);
+        bridges[_bridge].burnerParams.maxLimit = _limit;
 
-    bridges[_bridge].burnerParams.currentLimit = _calculateNewCurrentLimit(_limit, _oldLimit, _currentLimit);
+        bridges[_bridge].burnerParams.currentLimit = _calculateNewCurrentLimit(_limit, _oldLimit, _currentLimit);
 
-    bridges[_bridge].burnerParams.ratePerSecond = _limit / _DURATION;
-    bridges[_bridge].burnerParams.timestamp = block.timestamp;`, functions._changeMinterLimit);
+        bridges[_bridge].burnerParams.ratePerSecond = _limit / _DURATION;
+        bridges[_bridge].burnerParams.timestamp = block.timestamp;`, functions._changeMinterLimit);
 
     c.addFunctionCode(`uint256 _oldLimit = bridges[_bridge].burnerParams.maxLimit;
-    uint256 _currentLimit = burningCurrentLimitOf(_bridge);
-    bridges[_bridge].burnerParams.maxLimit = _limit;
+        uint256 _currentLimit = burningCurrentLimitOf(_bridge);
+        bridges[_bridge].burnerParams.maxLimit = _limit;
 
-    bridges[_bridge].burnerParams.currentLimit = _calculateNewCurrentLimit(_limit, _oldLimit, _currentLimit);`, functions._changeBurnerLimit);
+        bridges[_bridge].burnerParams.currentLimit = _calculateNewCurrentLimit(_limit, _oldLimit, _currentLimit);`, functions._changeBurnerLimit);
 
 
     c.addFunctionCode(`uint256 _difference;
 
-    if (_oldLimit > _limit) {
-      _difference = _oldLimit - _limit;
-      _newCurrentLimit = _currentLimit > _difference ? _currentLimit - _difference : 0;
-    } else {
-      _difference = _limit - _oldLimit;
-      _newCurrentLimit = _currentLimit + _difference;
-    }`, functions._calculateNewCurrentLimit);
+        if (_oldLimit > _limit) {
+            _difference = _oldLimit - _limit;
+            _newCurrentLimit = _currentLimit > _difference ? _currentLimit - _difference : 0;
+        } else {
+            _difference = _limit - _oldLimit;
+            _newCurrentLimit = _currentLimit + _difference;
+        }`, functions._calculateNewCurrentLimit);
 
     c.addFunctionCode(`_limit = _currentLimit;
-    if (_limit == _maxLimit) {
-      return _limit;
-    } else if (_timestamp + _DURATION <= block.timestamp) {
-      _limit = _maxLimit;
-    } else if (_timestamp + _DURATION > block.timestamp) {
-      uint256 _timePassed = block.timestamp - _timestamp;
-      uint256 _calculatedLimit = _limit + (_timePassed * _ratePerSecond);
-      _limit = _calculatedLimit > _maxLimit ? _maxLimit : _calculatedLimit;
-    }`, functions._getCurrentLimit);
+        if (_limit == _maxLimit) {
+            return _limit;
+        } else if (_timestamp + _DURATION <= block.timestamp) {
+            _limit = _maxLimit;
+        } else if (_timestamp + _DURATION > block.timestamp) {
+            uint256 _timePassed = block.timestamp - _timestamp;
+            uint256 _calculatedLimit = _limit + (_timePassed * _ratePerSecond);
+            _limit = _calculatedLimit > _maxLimit ? _maxLimit : _calculatedLimit;
+        }`, functions._getCurrentLimit);
 
     c.addFunctionCode(`if (_caller != lockbox) {
-      uint256 _currentLimit = mintingCurrentLimitOf(_caller);
-      if (_currentLimit < _amount) revert IXERC20_NotHighEnoughLimits();
-      _useMinterLimits(_caller, _amount);
-    }
-    _mint(_user, _amount);`, functions._mintWithCaller);
+        uint256 _currentLimit = mintingCurrentLimitOf(_caller);
+        if (_currentLimit < _amount) revert IXERC20_NotHighEnoughLimits();
+            _useMinterLimits(_caller, _amount);
+        }
+        _mint(_user, _amount);`, functions._mintWithCaller);
 
     
     c.addFunctionCode(`if (_caller != lockbox) {
-      uint256 _currentLimit = burningCurrentLimitOf(_caller);
-      if (_currentLimit < _amount) revert IXERC20_NotHighEnoughLimits();
-      _useBurnerLimits(_caller, _amount);
-    }
-    _burn(_user, _amount);`, functions._burnWithCaller);
+        uint256 _currentLimit = burningCurrentLimitOf(_caller);
+        if (_currentLimit < _amount) revert IXERC20_NotHighEnoughLimits();
+            _useBurnerLimits(_caller, _amount);
+        }
+        _burn(_user, _amount);`, functions._burnWithCaller);
 
     c.addFunctionCode(`_burnWithCaller(msg.sender, _user, _amount);`, functions._burnWithCaller);
 }

@@ -96,26 +96,26 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
   });
 
   c.addConstructorCode(`XERC20 = IXERC20(_xerc20);
-    ERC20 = IERC20(_erc20);
-    IS_NATIVE = _isNative;`);
+        ERC20 = IERC20(_erc20);
+        IS_NATIVE = _isNative;`);
 
   c.addModifier('payable', functions.depositNative);
   c.addFunctionCode(`if (!IS_NATIVE) revert IXERC20Lockbox_NotNative();
 
-    _deposit(msg.sender, msg.value);`, functions.depositNative);
+        _deposit(msg.sender, msg.value);`, functions.depositNative);
 
   c.addFunctionCode(`if (IS_NATIVE) revert IXERC20Lockbox_Native();
 
-    _deposit(msg.sender, _amount);`, functions.deposit);
+        _deposit(msg.sender, _amount);`, functions.deposit);
 
   c.addFunctionCode(`if (IS_NATIVE) revert IXERC20Lockbox_Native();
 
-    _deposit(_to, _amount);`, functions.depositTo);
+        _deposit(_to, _amount);`, functions.depositTo);
 
   c.addModifier('payable', functions.depositNativeTo);
   c.addFunctionCode(`if (!IS_NATIVE) revert IXERC20Lockbox_NotNative();
 
-    _deposit(_to, msg.value);`, functions.depositNativeTo);
+        _deposit(_to, msg.value);`, functions.depositNativeTo);
 
   c.addFunctionCode(`_withdraw(msg.sender, _amount);`, functions.withdraw);
 
@@ -124,21 +124,21 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
 
   c.addFunctionCode(`emit Withdraw(_to, _amount);
 
-    XERC20.burn(msg.sender, _amount);
+        XERC20.burn(msg.sender, _amount);
 
-    if (IS_NATIVE) {
-      (bool _success,) = payable(_to).call{value: _amount}('');
-      if (!_success) revert IXERC20Lockbox_WithdrawFailed();
-    } else {
-      ERC20.safeTransfer(_to, _amount);
-    }`, functions._withdraw);
+        if (IS_NATIVE) {
+            (bool _success,) = payable(_to).call{value: _amount}('');
+        if (!_success) revert IXERC20Lockbox_WithdrawFailed();
+        } else {
+            ERC20.safeTransfer(_to, _amount);
+        }`, functions._withdraw);
 
   c.addFunctionCode(`if (!IS_NATIVE) {
-      ERC20.safeTransferFrom(msg.sender, address(this), _amount);
-    }
+            ERC20.safeTransferFrom(msg.sender, address(this), _amount);
+        }
 
-    XERC20.mint(_to, _amount);
-    emit Deposit(_to, _amount);`, functions._deposit);
+        XERC20.mint(_to, _amount);
+        emit Deposit(_to, _amount);`, functions._deposit);
 
    c.addReceiveCode(`depositNative();`)
 
