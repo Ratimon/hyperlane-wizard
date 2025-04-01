@@ -213,14 +213,14 @@ const parents = {
 const parentsOZ = {
   Ownable: {
     name: 'Ownable',
-    path: '@openzeppelin/contracts/access/Ownable.sol',
+    path: '@openzeppelin-5_2_0/contracts/access/Ownable.sol',
   },
   AccessControl: {
     name: 'AccessControl',
-    path: '@openzeppelin/contracts/access/AccessControl.sol',
+    path: '@openzeppelin-5_2_0/contracts/access/AccessControl.sol',
   },
   AccessManaged: {
     name: 'AccessManaged',
-    path: '@openzeppelin/contracts/access/manager/AccessManaged.sol',
+    path: '@openzeppelin-5_2_0/contracts/access/manager/AccessManaged.sol',
   },
 };

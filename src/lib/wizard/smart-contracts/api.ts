@@ -2,6 +2,10 @@ import type { SharedERC20Options} from '../shared/dapp/1-option-erc20';
 import {  defaults as erc20Defaults } from '../shared/dapp/1-option-erc20';
 import { printERC20, isAccessControlRequired as erc20IsAccessControlRequired } from './dapp/1-erc20-primary';
 
+import type { SharedERC4626Options } from '../shared/dapp/1-option-erc4626';
+import {  defaults as erc4626Defaults } from '../shared/dapp/1-option-erc4626';
+import { printERC4626, isAccessControlRequired as erc4626IsAccessControlRequired } from './dapp/1-erc4626-primary';
+
 
 import type { CommonOptions } from '../shared/common-options';
 
@@ -26,4 +30,11 @@ export const erc20: ERC20 = {
   print: printERC20,
   defaults: erc20Defaults,
   isAccessControlRequired: erc20IsAccessControlRequired
+}
+
+export type ERC4626 = WizardContractAPI<SharedERC4626Options>;
+export const erc4626: ERC4626 = {
+  print: printERC4626,
+  defaults: erc4626Defaults,
+  isAccessControlRequired: erc4626IsAccessControlRequired
 }

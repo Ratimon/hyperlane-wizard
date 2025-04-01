@@ -1,7 +1,7 @@
 export type {
     KindedFromOptions, GenericFromOptions,
     KindedToOptions, GenericToOptions,
-    KindedERC20Options, GenericERC20Options,
+    KindedPrimaryTokenOptions, GenericPrimaryTokenOptions,
 } from './build-generic';
 
 
@@ -22,5 +22,5 @@ export { sanitizeKindFrom } from './dapp/2-kind-route-from';
 export type { KindTo } from './dapp/2-kind-route-to';
 export { sanitizeKindTo } from './dapp/2-kind-route-to';
 
-export type { KindERC20 } from './dapp/1-kind-erc20';
-export { sanitizeKindERC20 } from './dapp/1-kind-erc20';
+export type { KindPrimaryToken } from './dapp/1-kind-primary';
+export { sanitizeKindPrimaryToken } from './dapp/1-kind-primary';

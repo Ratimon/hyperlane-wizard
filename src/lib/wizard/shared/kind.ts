@@ -1,6 +1,6 @@
-import type { GenericERC20Options } from './build-generic';
+import type { GenericPrimaryTokenOptions } from './build-generic';
 
-export type Kind = GenericERC20Options['kind'];
+export type Kind = GenericPrimaryTokenOptions['kind'];
 
 export function sanitizeKind(kind: unknown): Kind {
   if (typeof kind === 'string') {
@@ -32,6 +32,9 @@ function isKind<T>(value: Kind | T): value is Kind {
       return true;
 
     case 'ERC20':
+      return true;
+
+    case 'ERC4626':
       return true;
 
     default: {

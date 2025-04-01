@@ -9,8 +9,11 @@ import type { SharedHypXERC20LockboxOptions } from './dapp/2-option-hyp-xerc20-l
 import type { SharedHypERC20Options } from './dapp/2-option-hyp-erc20';
 
 
-import type { SharedERC20Options} from './dapp/1-option-erc20';
 import type { SharedFastHypERC20Options } from './dapp/2-option-fast-hyp-erc20';
+
+
+import type { SharedERC4626Options } from './dapp/1-option-erc4626';
+import type { SharedERC20Options} from './dapp/1-option-erc20';
 
 
 export interface KindedFromOptions {
@@ -35,7 +38,8 @@ export interface KindedToOptions {
 export type GenericToOptions = KindedToOptions[keyof KindedToOptions];
 
 
-export interface KindedERC20Options {
+export interface KindedPrimaryTokenOptions {
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
+    ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
 }
-export type GenericERC20Options = KindedERC20Options[keyof KindedERC20Options];
+export type GenericPrimaryTokenOptions = KindedPrimaryTokenOptions[keyof KindedPrimaryTokenOptions];

@@ -117,7 +117,8 @@
 
 </script>
 
-<div class="container flex flex-col gap-4 p-8 mx-8">
+<!-- <div class="container flex flex-col gap-4 p-8 mx-8"> -->
+<div class="container flex flex-col gap-4">
 
     <!-- {@render guide()} -->
   

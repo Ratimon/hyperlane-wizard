@@ -80,7 +80,7 @@ export function buildERC20(opts: SharedERC20Options): ContractBuilder {
 function addBase(c: ContractBuilder, name: string, symbol: string) {
   const ERC20 = {
     name: 'ERC20',
-    path: '@openzeppelin/contracts/token/ERC20/ERC20.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/ERC20.sol',
   };
   c.addParent(ERC20, [name, symbol]);
 
@@ -91,7 +91,7 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
 function addPausableExtension(c: ContractBuilder, access: AccessOZ) {
   const ERC20Pausable = {
     name: 'ERC20Pausable',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Pausable.sol',
   };
   c.addParent(ERC20Pausable);
   c.addOverride(ERC20Pausable, functions._update);
@@ -102,7 +102,7 @@ function addPausableExtension(c: ContractBuilder, access: AccessOZ) {
 function addBurnable(c: ContractBuilder) {
   c.addParent({
     name: 'ERC20Burnable',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Burnable.sol',
   });
 }
 
@@ -173,7 +173,7 @@ function addMintable(c: ContractBuilder, access: AccessOZ) {
 function addPermit(c: ContractBuilder, name: string) {
   const ERC20Permit = {
     name: 'ERC20Permit',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Permit.sol',
   };
   c.addParent(ERC20Permit, [name]);
   c.addOverride(ERC20Permit, functions.nonces);
@@ -186,14 +186,14 @@ function addVotes(c: ContractBuilder, clockMode: ClockMode) {
 
   const ERC20Votes = {
     name: 'ERC20Votes',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Votes.sol',
   };
   c.addParent(ERC20Votes);
   c.addOverride(ERC20Votes, functions._update);
 
   c.addImportOnly({
     name: 'Nonces',
-    path: '@openzeppelin/contracts/utils/Nonces.sol',
+    path: '@openzeppelin-5.0.0/contracts/utils/Nonces.sol',
   });
   c.addOverride(
     {
@@ -208,116 +208,116 @@ function addVotes(c: ContractBuilder, clockMode: ClockMode) {
 function addFlashMint(c: ContractBuilder) {
   c.addParent({
     name: 'ERC20FlashMint',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20FlashMint.sol',
+    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20FlashMint.sol',
   });
 }
 
-function addCrossChainBridging(
-  c: ContractBuilder,
-  crossChainBridging: 'custom' | 'superchain',
-  upgradeable: Upgradeable,
-  access: AccessOZ,
-) {
-  const ERC20Bridgeable = {
-    name: 'ERC20Bridgeable',
-    path: `@openzeppelin/community-contracts/contracts/token/ERC20/extensions/ERC20Bridgeable.sol`,
-  };
+// function addCrossChainBridging(
+//   c: ContractBuilder,
+//   crossChainBridging: 'custom' | 'superchain',
+//   upgradeable: Upgradeable,
+//   access: AccessOZ,
+// ) {
+//   const ERC20Bridgeable = {
+//     name: 'ERC20Bridgeable',
+//     path: `@openzeppelin-5.0.0/community-contracts/contracts/token/ERC20/extensions/ERC20Bridgeable.sol`,
+//   };
 
-  c.addParent(ERC20Bridgeable);
-  c.addOverride(ERC20Bridgeable, supportsInterface);
+//   c.addParent(ERC20Bridgeable);
+//   c.addOverride(ERC20Bridgeable, supportsInterface);
 
-  if (upgradeable) {
-    throw new OptionsError({
-      crossChainBridging: 'Upgradeability is not currently supported with Cross-Chain Bridging',
-    });
-  }
+//   if (upgradeable) {
+//     throw new OptionsError({
+//       crossChainBridging: 'Upgradeability is not currently supported with Cross-Chain Bridging',
+//     });
+//   }
 
-  c.addOverride(ERC20Bridgeable, functions._checkTokenBridge);
-  switch (crossChainBridging) {
-    case 'custom':
-      addCustomBridging(c, access);
-      break;
-    case 'superchain':
-      addSuperchainERC20(c);
-      break;
-    default: {
-      const _: never = crossChainBridging;
-      throw new Error('Unknown value for `crossChainBridging`');
-    }
-  }
-  c.addVariable('error Unauthorized();');
-}
+//   c.addOverride(ERC20Bridgeable, functions._checkTokenBridge);
+//   switch (crossChainBridging) {
+//     case 'custom':
+//       addCustomBridging(c, access);
+//       break;
+//     case 'superchain':
+//       addSuperchainERC20(c);
+//       break;
+//     default: {
+//       const _: never = crossChainBridging;
+//       throw new Error('Unknown value for `crossChainBridging`');
+//     }
+//   }
+//   c.addVariable('error Unauthorized();');
+// }
 
-function addCustomBridging(c: ContractBuilder, access: AccessOZ) {
-  switch (access) {
-    case false:
-    case 'ownable': {
-      const addedBridgeImmutable = c.addVariable(`address public immutable TOKEN_BRIDGE;`);
-      if (addedBridgeImmutable) {
-        c.addConstructorArgument({ type: 'address', name: 'tokenBridge' });
-        c.addConstructorCode(`require(tokenBridge != address(0), "Invalid TOKEN_BRIDGE address");`);
-        c.addConstructorCode(`TOKEN_BRIDGE = tokenBridge;`);
-      }
-      c.setFunctionBody([`if (caller != TOKEN_BRIDGE) revert Unauthorized();`], functions._checkTokenBridge, 'view');
-      break;
-    }
-    case 'roles': {
-      setAccessControlOZ(c, access);
-      const roleOwner = 'tokenBridge';
-      const roleId = 'TOKEN_BRIDGE_ROLE';
-      const addedRoleConstant = c.addVariable(`bytes32 public constant ${roleId} = keccak256("${roleId}");`);
-      if (addedRoleConstant) {
-        c.addConstructorArgument({ type: 'address', name: roleOwner });
-        c.addConstructorCode(`_grantRole(${roleId}, ${roleOwner});`);
-      }
-      c.setFunctionBody(
-        [`if (!hasRole(${roleId}, caller)) revert Unauthorized();`],
-        functions._checkTokenBridge,
-        'view',
-      );
-      break;
-    }
-    case 'managed': {
-        setAccessControlOZ(c, access);
-      c.addImportOnly({
-        name: 'AuthorityUtils',
-        path: `@openzeppelin/contracts/access/manager/AuthorityUtils.sol`,
-      });
-      c.setFunctionBody(
-        [
-          `(bool immediate,) = AuthorityUtils.canCallWithDelay(authority(), caller, address(this), bytes4(_msgData()[0:4]));`,
-          `if (!immediate) revert Unauthorized();`,
-        ],
-        functions._checkTokenBridge,
-        'view',
-      );
-      break;
-    }
-    default: {
-      const _: never = access;
-      throw new Error('Unknown value for `access`');
-    }
-  }
-}
+// function addCustomBridging(c: ContractBuilder, access: AccessOZ) {
+//   switch (access) {
+//     case false:
+//     case 'ownable': {
+//       const addedBridgeImmutable = c.addVariable(`address public immutable TOKEN_BRIDGE;`);
+//       if (addedBridgeImmutable) {
+//         c.addConstructorArgument({ type: 'address', name: 'tokenBridge' });
+//         c.addConstructorCode(`require(tokenBridge != address(0), "Invalid TOKEN_BRIDGE address");`);
+//         c.addConstructorCode(`TOKEN_BRIDGE = tokenBridge;`);
+//       }
+//       c.setFunctionBody([`if (caller != TOKEN_BRIDGE) revert Unauthorized();`], functions._checkTokenBridge, 'view');
+//       break;
+//     }
+//     case 'roles': {
+//       setAccessControlOZ(c, access);
+//       const roleOwner = 'tokenBridge';
+//       const roleId = 'TOKEN_BRIDGE_ROLE';
+//       const addedRoleConstant = c.addVariable(`bytes32 public constant ${roleId} = keccak256("${roleId}");`);
+//       if (addedRoleConstant) {
+//         c.addConstructorArgument({ type: 'address', name: roleOwner });
+//         c.addConstructorCode(`_grantRole(${roleId}, ${roleOwner});`);
+//       }
+//       c.setFunctionBody(
+//         [`if (!hasRole(${roleId}, caller)) revert Unauthorized();`],
+//         functions._checkTokenBridge,
+//         'view',
+//       );
+//       break;
+//     }
+//     case 'managed': {
+//         setAccessControlOZ(c, access);
+//       c.addImportOnly({
+//         name: 'AuthorityUtils',
+//         path: `@openzeppelin-5.0.0/contracts/access/manager/AuthorityUtils.sol`,
+//       });
+//       c.setFunctionBody(
+//         [
+//           `(bool immediate,) = AuthorityUtils.canCallWithDelay(authority(), caller, address(this), bytes4(_msgData()[0:4]));`,
+//           `if (!immediate) revert Unauthorized();`,
+//         ],
+//         functions._checkTokenBridge,
+//         'view',
+//       );
+//       break;
+//     }
+//     default: {
+//       const _: never = access;
+//       throw new Error('Unknown value for `access`');
+//     }
+//   }
+// }
 
-function addSuperchainERC20(c: ContractBuilder) {
-  c.addVariable('address internal constant SUPERCHAIN_TOKEN_BRIDGE = 0x4200000000000000000000000000000000000028;');
-  c.setFunctionBody(
-    ['if (caller != SUPERCHAIN_TOKEN_BRIDGE) revert Unauthorized();'],
-    functions._checkTokenBridge,
-    'pure',
-  );
-  c.setFunctionComments(
-    [
-      '/**',
-      ' * @dev Checks if the caller is the predeployed SuperchainTokenBridge. Reverts otherwise.',
-      ' *',
-      ' * IMPORTANT: The predeployed SuperchainTokenBridge is only available on chains in the Superchain.',
-      ' */',
-    ],
-    functions._checkTokenBridge,
-  );
-}
+// function addSuperchainERC20(c: ContractBuilder) {
+//   c.addVariable('address internal constant SUPERCHAIN_TOKEN_BRIDGE = 0x4200000000000000000000000000000000000028;');
+//   c.setFunctionBody(
+//     ['if (caller != SUPERCHAIN_TOKEN_BRIDGE) revert Unauthorized();'],
+//     functions._checkTokenBridge,
+//     'pure',
+//   );
+//   c.setFunctionComments(
+//     [
+//       '/**',
+//       ' * @dev Checks if the caller is the predeployed SuperchainTokenBridge. Reverts otherwise.',
+//       ' *',
+//       ' * IMPORTANT: The predeployed SuperchainTokenBridge is only available on chains in the Superchain.',
+//       ' */',
+//     ],
+//     functions._checkTokenBridge,
+//   );
+// }
 
 export const functions = defineFunctions({
   _update: {

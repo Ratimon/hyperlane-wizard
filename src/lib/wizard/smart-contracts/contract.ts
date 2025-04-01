@@ -31,6 +31,7 @@ export interface Parent {
   contract: ImportContract;
   params: Value[];
   importOnly?: boolean;
+  haveNoInheritance?: boolean;
 }
 
 export interface ImportContract extends ReferencedContract {
@@ -216,6 +217,12 @@ export class ContractBuilder implements Contract {
 
   addImportOnly(contract: ImportContract) {
     this.modules.push(contract);
+  }
+
+  addImportWithNoInheritance(contract: ImportContract, params: Value[] = []) : boolean {
+    const present = this.parentMap.has(contract.name);
+    this.parentMap.set(contract.name, { contract, params, haveNoInheritance: true });
+    return !present;
   }
 
   addParent(contract: ImportContract, params: Value[] = []): boolean {

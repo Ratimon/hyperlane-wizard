@@ -67,7 +67,7 @@ export function printContract(contract: Contract, opts?: Options): string {
 
 function printInheritance(contract: Contract, { transformName }: Helpers): [] | [string] {
   if (contract.parents.length > 0) {
-    return ['is ' + contract.parents.map(p => transformName(p.contract)).join(', ')];
+    return ['is ' + contract.parents.filter(p => !p.haveNoInheritance).map(p => transformName(p.contract)).join(', ')];
   } else {
     return [];
   }

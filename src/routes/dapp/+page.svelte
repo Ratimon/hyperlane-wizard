@@ -6,8 +6,8 @@
     import { ContractBuilder, buildContractGeneric } from '$lib/wizard/smart-contracts';
 
     import type {
-      KindedERC20Options,
-      KindERC20,
+      KindedPrimaryTokenOptions,
+      KindPrimaryToken,
       KindedFromOptions,
       KindedToOptions,
       KindFrom,
@@ -16,7 +16,7 @@
     } from '$lib/wizard/shared';
 
     import { 
-      sanitizeKindERC20,
+      sanitizeKindPrimaryToken,
       OptionsError,
       sanitizeKindFrom,
       sanitizeKindTo,
@@ -33,6 +33,7 @@
     import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
     import OverflowMenu from '$lib/ui/layouts/OverflowMenu.svelte';
     import ERC20ContractControls from '$lib/ui/controls/ERC20ContractControls.svelte';
+    import ERC4626ContractControls from '$lib/ui/controls/ERC4626ContractControls.svelte';
 
     type Props = {
         data: PageData;
@@ -47,13 +48,13 @@
     ];
 
     let initialContractPrimaryTokenTab: string | undefined = $state('MyERC20');
-    let contractPrimaryTokenTab: KindERC20 = $derived(sanitizeKindERC20(initialContractPrimaryTokenTab));
-    let allOptsPrimaryToken: { [k in KindERC20]?: Required<KindedERC20Options [k]> } =  $state({});
+    let contractPrimaryTokenTab: KindPrimaryToken = $derived(sanitizeKindPrimaryToken(initialContractPrimaryTokenTab));
+    let allOptsPrimaryToken: { [k in KindPrimaryToken]?: Required<KindedPrimaryTokenOptions [k]> } =  $state({});
 
-    let contractPrimaryToken: Contract = $state(new ContractBuilder('MyERC20'));
+    let contractPrimaryToken: Contract = $state(new ContractBuilder('MyPrimaryToken'));
     const optsPrimaryToken = $derived(allOptsPrimaryToken[contractPrimaryTokenTab]);
 
-    let errorsPrimaryToken : { [k in KindERC20]?: OptionsErrorMessages } =  $state({});
+    let errorsPrimaryToken : { [k in KindPrimaryToken]?: OptionsErrorMessages } =  $state({});
 
     $effect(() => {
       if (optsPrimaryToken) {
@@ -197,8 +198,16 @@
           }
         }
       }
-    });
+  });
 
+  let contactFromPrimaryStandard:  string = $state('ERC20')
+
+  $effect(() => {
+    if (initialContractFromTab) {
+      contactFromPrimaryStandard = contractFromLists.find(contract => contract.name === initialContractFromTab)?.primaryToken ?? ''
+      initialContractPrimaryTokenTab = contactFromPrimaryStandard
+    }
+  })
 
   let contractToLists = [
     {
@@ -231,26 +240,22 @@
     contractToLists.filter(contract => contract.route === warpRouteState.route)
   )
 
-  let contactFromPrimaryStandard: string = $derived(
-    contractFromLists.find(contract => contract.name === initialContractFromTab)?.primaryToken ?? ''
-  )
-
-
 
   let initialContractToTab: string | undefined = $state(undefined);
   let contractToTab : KindTo = $derived(sanitizeKindTo(initialContractToTab));
 
 
-  function comfirmRoute() {
+  function comfirmRoute( primaryToken: string ) {
     warpRouteState.state = 'DeployingPrimaryToken'
+    initialContractPrimaryTokenTab = primaryToken;
   }
-
 
   let isPrimaryTokenDeployed: boolean = $state(true);
 
-  function togglePrimaryTokenDeployed() {
+  function togglePrimaryTokenDeployed( ) {
     isPrimaryTokenDeployed = !isPrimaryTokenDeployed
   }
+
 </script>
 
 <section class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-4 lg:py-10">
@@ -374,9 +379,9 @@
           variant="default"
           class="button block"
           type="submit"
-          onclick={comfirmRoute}
+          onclick={() => comfirmRoute(contactFromPrimaryStandard)}
       >
-         Confirm this Route and Select Your Primary Token
+         Confirm this Route
       </Button>
 
     </div>
@@ -398,7 +403,7 @@
 
 {#if warpRouteState.state !== 'DeployingPrimaryToken'}
 
-  <div class="container flex flex-row justify-center items-center gap-x-16 p-8 mx-8 ">
+  <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
 
     <p class="font-bold text-xl">
       Complete step One first!
@@ -410,55 +415,94 @@
 
 <!-- <div class="container flex flex-col gap-4 p-8 mx-8"> -->
 
-  <div class="container flex flex-row justify-center items-center gap-x-16 p-8 mx-8 ">
+  <div class="container flex flex-col items-center justify-center p-8 mx-8">
 
-    <h2 class="font-semibold text-xl">
-      <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >The Token's standard from destination chain is: </div>
-    </h2>
-
-    <h2 class="font-semibold text-xl">
-      {contactFromPrimaryStandard}
-    </h2>
-
-
-    <fieldset class="fieldset p-4 bg-base-100 border border-base-300 rounded-box w-64">
-      <legend class="fieldset-legend font-bold">
-        Have Not Deployed Yet? Uncheck It !!
-      </legend>
-      <label class="fieldset-label">
-        <input type="checkbox" checked={isPrimaryTokenDeployed} class="checkbox" onclick={togglePrimaryTokenDeployed} />
-        A primary token at desination chain already deployed
-      </label>
-    </fieldset>
     
+    <h2 class="font-semibold text-xl">
+      Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
+    </h2>
+
+    <div class="flex flex-row items-center gap-x-16 mx-8">
+      <!-- <div class="container flex flex-row justify-center items-center gap-x-16 p-8 mx-8 "> -->
+    
+      <h3 class="font-semibold text-xl">
+        The standard being deployed is:
+      </h3>
+  
+      <h3 class="font-semibold text-lg">
+        {contactFromPrimaryStandard}
+      </h3>
+  
+      <fieldset class="fieldset p-4 bg-base-100 border border-base-300 rounded-box w-80">
+        <legend class="fieldset-legend font-bold">
+          Have Not Deployed Yet? Uncheck below to start modifying!!
+        </legend>
+        <label class="fieldset-label">
+          <input type="checkbox" checked={isPrimaryTokenDeployed} class="checkbox" onclick={togglePrimaryTokenDeployed} />
+          A contract at source chain already deployed
+        </label>
+      </fieldset>
+
+      <label class="input input-xl validator">
+        <!-- <legend class="fieldset-legend">Put required address here</legend> -->
+        <input placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
+      </label>
+      <p class="validator-hint hidden">
+        Must be in the format of 0x followed by 40 characters
+      </p>
+        
+    </div>
+    
+    {#if !isPrimaryTokenDeployed}
+      <WizardSingle initialContractTab={initialContractPrimaryTokenTab} contractTab={contractPrimaryTokenTab} opts={optsPrimaryToken} contractInstance={contractPrimaryToken}>
+  
+        {#snippet menu()}
+          <div class="tab overflow-hidden">
+            <Background color="bg-base-200">
+              <OverflowMenu>
+  
+                
+                {#if contractPrimaryTokenTab === 'ERC20'}
+                  <button class:selected={contractPrimaryTokenTab === 'ERC20'} onclick={() => initialContractPrimaryTokenTab = 'ERC20'}>
+                    ERC20
+                  </button>
+                {/if}
+  
+                {#if contractPrimaryTokenTab === 'ERC4626'}
+                  <button class:selected={contractPrimaryTokenTab === 'ERC4626'} onclick={() => initialContractPrimaryTokenTab = 'ERC4626'}>
+                    ERC4626
+                  </button>
+                {/if}
+  
+              </OverflowMenu>
+            </Background>
+          </div>
+        {/snippet}
+      
+        {#snippet control()}
+          <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto">
+  
+            {#if contractPrimaryTokenTab === 'ERC20'}
+              <div class:hidden={contractPrimaryTokenTab !== 'ERC20'}>
+                <ERC20ContractControls bind:opts={allOptsPrimaryToken.ERC20!}/>
+              </div>
+            {/if}
+  
+            {#if contractPrimaryTokenTab === 'ERC4626'}
+              <div class:hidden={contractPrimaryTokenTab !== 'ERC4626'}>
+                <ERC4626ContractControls bind:opts={allOptsPrimaryToken.ERC4626!}/>
+              </div>
+            {/if}
+            
+          </div>
+        {/snippet}
+      
+      </WizardSingle>
+  
+    {/if}
+
   </div>
 
-  {#if !isPrimaryTokenDeployed}
-    <WizardSingle initialContractTab={initialContractPrimaryTokenTab} contractTab={contractPrimaryTokenTab} opts={optsPrimaryToken} contractInstance={contractPrimaryToken}>
-
-      {#snippet menu()}
-        <div class="tab overflow-hidden">
-          <Background color="bg-base-200">
-            <OverflowMenu>
-              <button class:selected={contractPrimaryTokenTab === 'ERC20'} onclick={() => initialContractPrimaryTokenTab = 'ERC20'}>
-                ERC20
-              </button>    
-            </OverflowMenu>
-          </Background>
-        </div>
-      {/snippet}
-    
-      {#snippet control()}
-        <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto">
-          <div class:hidden={contractPrimaryTokenTab !== 'ERC20'}>
-              <ERC20ContractControls bind:opts={allOptsPrimaryToken.ERC20!}/>
-          </div>
-        </div>
-      {/snippet}
-    
-    </WizardSingle>
-
-  {/if}
 
 {/if}
 

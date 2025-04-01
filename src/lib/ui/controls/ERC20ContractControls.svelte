@@ -3,10 +3,11 @@
   
     import HelpTooltip from '$lib/ui/controls/HelpTooltip.svelte';
     import ToggleRadio from '$lib/ui/inputs/ToggleRadio.svelte';
+    import AccessOZControlSection from '$lib/ui/controls/AccessOZControlSection.svelte';
     // import UpgradeabilitySection from '$lib/ui/controls/UpgradeabilitySection.svelte';
 
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
-    import type { KindedERC20Options } from '$lib/wizard/shared';
+    import type { KindedPrimaryTokenOptions } from '$lib/wizard/shared';
   
     import { erc20 } from '$lib/wizard/smart-contracts';
     // import { deployERC20 } from '$lib/wizard/deploy-scripts';
@@ -16,7 +17,7 @@
     // const deployDefaults = deployERC20Votes.defaults;
 
     type Props = {
-      opts: Required<KindedERC20Options['ERC20']>;
+      opts: Required<KindedPrimaryTokenOptions['ERC20']>;
     };
 
     let {
@@ -41,6 +42,12 @@
         contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at https://github.com/Ratimon/superfuse-forge', license: 'MIT'  },
       }
+    });
+
+    let requireAccessControl = $state(true);
+
+    $effect(() => {
+      requireAccessControl = erc20.isAccessControlRequired!(opts);
     });
   
 </script>
@@ -156,9 +163,8 @@
   </div>
 </section>
 
-
+<AccessOZControlSection bind:access={opts.access} required={requireAccessControl} />
 <!-- <UpgradeabilitySection bind:upgradeable={opts.upgradeable} /> -->
-
 
 <section class="controls-section">
   <h1>
