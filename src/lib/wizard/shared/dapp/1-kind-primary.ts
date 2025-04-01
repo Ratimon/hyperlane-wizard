@@ -1,4 +1,7 @@
-import type { GenericPrimaryTokenFromOptions } from '../build-generic';
+import type {
+  GenericPrimaryTokenFromOptions,
+  GenericPrimaryTokenToOptions,
+} from '../build-generic';
 
 export type KindPrimaryTokenFrom = GenericPrimaryTokenFromOptions['kind'];
 
@@ -17,7 +20,35 @@ function isKindPrimaryTokenFrom<T>(value: KindPrimaryTokenFrom | T): value is Ki
       return true;
     case 'ERC4626':
       return true;
+    case 'XERC20':
+      return true;
 
+    default: {
+      // Static assert that we've checked all kinds.
+      const _: T = value;
+      return false;
+    }
+  }
+}
+
+export type KindPrimaryTokenTo = GenericPrimaryTokenToOptions['kind'];
+
+export function sanitizeKindPrimaryTokenTo(kind: unknown): KindPrimaryTokenTo {
+  if (typeof kind === 'string') {
+    if (isKindPrimaryTokenTo(kind)) {
+      return kind;
+    }
+  }
+  return 'XERC20';
+}
+
+function isKindPrimaryTokenTo<T>(value: KindPrimaryTokenTo | T): value is KindPrimaryTokenTo {
+  switch (value) {
+    case 'XERC20':
+      return true;
+    case 'XERC20Lockbox':
+      return true;
+      
     default: {
       // Static assert that we've checked all kinds.
       const _: T = value;

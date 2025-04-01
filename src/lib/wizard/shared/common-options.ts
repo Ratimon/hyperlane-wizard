@@ -1,12 +1,12 @@
 import type { Info } from "./set-info";
 import { defaults as infoDefaults } from "./set-info";
 
-import type { Access } from "../smart-contracts/set-access-control";
+import type { Access, AccessOZ } from "../smart-contracts/set-access-control";
 import type { Upgradeable } from "../smart-contracts/set-upgradeable";
 
 
 export interface CommonOptions {
-  access?: Access;
+  access?: Access | AccessOZ;
   upgradeable?: Upgradeable;
   contractInfo?: Info;
 
@@ -32,7 +32,7 @@ export const defaults: Required<CommonOptions> = {
 
 
 export interface CommonOptions {
-  access?: Access;
+  access?: Access | AccessOZ;
   upgradeable?: Upgradeable;
   contractInfo?: Info;
 

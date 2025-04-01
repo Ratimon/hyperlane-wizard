@@ -10,12 +10,15 @@ import { buildERC20 } from './dapp/1-erc20-primary';
 import type { SharedERC4626Options } from '../shared/dapp/1-option-erc4626';
 import { buildERC4626 } from './dapp/1-erc4626-primary';
 
+import type { SharedXERC20Options} from '../shared/dapp/1-option-xerc20';
+import { buildXERC20 } from './dapp/1-xerc20-primary';
 
 
 export interface KindedOptions {
     HypERC20Collateral : {kind: 'HypERC20Collateral'} & SharedHypERC20CollateralOptions;
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
     ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
+    XERC20: { kind: 'XERC20' } & SharedXERC20Options;
 }
 
 export type GenericOptions = KindedOptions[keyof KindedOptions];
@@ -49,6 +52,9 @@ export function buildContractGeneric(opts: GenericOptions) {
         
         case 'ERC4626':
             return buildERC4626(opts);
+
+        case 'XERC20':
+            return buildXERC20(opts);
 
         // tdo : bring when there are at least two casess
         

@@ -80,7 +80,7 @@ export function buildERC20(opts: SharedERC20Options): ContractBuilder {
 function addBase(c: ContractBuilder, name: string, symbol: string) {
   const ERC20 = {
     name: 'ERC20',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/ERC20.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/ERC20.sol',
   };
   c.addParent(ERC20, [name, symbol]);
 
@@ -91,7 +91,7 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
 function addPausableExtension(c: ContractBuilder, access: AccessOZ) {
   const ERC20Pausable = {
     name: 'ERC20Pausable',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Pausable.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20Pausable.sol',
   };
   c.addParent(ERC20Pausable);
   c.addOverride(ERC20Pausable, functions._update);
@@ -102,7 +102,7 @@ function addPausableExtension(c: ContractBuilder, access: AccessOZ) {
 function addBurnable(c: ContractBuilder) {
   c.addParent({
     name: 'ERC20Burnable',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Burnable.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20Burnable.sol',
   });
 }
 
@@ -173,7 +173,7 @@ function addMintable(c: ContractBuilder, access: AccessOZ) {
 function addPermit(c: ContractBuilder, name: string) {
   const ERC20Permit = {
     name: 'ERC20Permit',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Permit.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20Permit.sol',
   };
   c.addParent(ERC20Permit, [name]);
   c.addOverride(ERC20Permit, functions.nonces);
@@ -186,14 +186,14 @@ function addVotes(c: ContractBuilder, clockMode: ClockMode) {
 
   const ERC20Votes = {
     name: 'ERC20Votes',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20Votes.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20Votes.sol',
   };
   c.addParent(ERC20Votes);
   c.addOverride(ERC20Votes, functions._update);
 
   c.addImportOnly({
     name: 'Nonces',
-    path: '@openzeppelin-5.0.0/contracts/utils/Nonces.sol',
+    path: '@openzeppelin-5_2_0/contracts/utils/Nonces.sol',
   });
   c.addOverride(
     {
@@ -208,7 +208,7 @@ function addVotes(c: ContractBuilder, clockMode: ClockMode) {
 function addFlashMint(c: ContractBuilder) {
   c.addParent({
     name: 'ERC20FlashMint',
-    path: '@openzeppelin-5.0.0/contracts/token/ERC20/extensions/ERC20FlashMint.sol',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/extensions/ERC20FlashMint.sol',
   });
 }
 
@@ -220,7 +220,7 @@ function addFlashMint(c: ContractBuilder) {
 // ) {
 //   const ERC20Bridgeable = {
 //     name: 'ERC20Bridgeable',
-//     path: `@openzeppelin-5.0.0/community-contracts/contracts/token/ERC20/extensions/ERC20Bridgeable.sol`,
+//     path: `@openzeppelin-5_2_0/community-contracts/contracts/token/ERC20/extensions/ERC20Bridgeable.sol`,
 //   };
 
 //   c.addParent(ERC20Bridgeable);
@@ -281,7 +281,7 @@ function addFlashMint(c: ContractBuilder) {
 //         setAccessControlOZ(c, access);
 //       c.addImportOnly({
 //         name: 'AuthorityUtils',
-//         path: `@openzeppelin-5.0.0/contracts/access/manager/AuthorityUtils.sol`,
+//         path: `@openzeppelin-5_2_0/contracts/access/manager/AuthorityUtils.sol`,
 //       });
 //       c.setFunctionBody(
 //         [

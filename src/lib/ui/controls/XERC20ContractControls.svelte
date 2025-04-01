@@ -6,17 +6,16 @@
     // import UpgradeabilitySection from '$lib/ui/controls/UpgradeabilitySection.svelte';
 
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
-    import type { KindedPrimaryTokenFromOptions } from '$lib/wizard/shared';
+    import type { KindedPrimaryTokenToOptions } from '$lib/wizard/shared';
   
-    import { erc4626 } from '$lib/wizard/smart-contracts';
-    // import { deployERC4626 } from '$lib/wizard/deploy-scripts';
+    import { xerc20 } from '$lib/wizard/smart-contracts';
   
   
-    const contractDefaults = erc4626.defaults;
+    const contractDefaults = xerc20.defaults;
     // const deployDefaults = deployERC4626Votes.defaults;
 
     type Props = {
-      opts: Required<KindedPrimaryTokenFromOptions['ERC4626']>;
+      opts: Required<KindedPrimaryTokenToOptions['XERC20']>;
     };
 
     let {
@@ -24,7 +23,7 @@
     }: Props = $props();
 
     if (opts === undefined) opts = {
-      kind: 'ERC4626',
+      kind: 'XERC20',
       ...contractDefaults,
       //   premint: '', // default to empty premint in UI instead of 0
       // ...deployDefaults,
@@ -34,7 +33,7 @@
 
     $effect.pre(() => {
       if (opts === undefined) opts = {
-        kind: 'ERC4626',
+        kind: 'XERC20',
         ...contractDefaults,
         //   premint: '', // default to empty premint in UI instead of 0
         // ...deployDefaults,
@@ -46,7 +45,7 @@
     let requireAccessControl = $state(true);
 
     $effect(() => {
-      requireAccessControl = erc4626.isAccessControlRequired!(opts);
+      requireAccessControl = xerc20.isAccessControlRequired!(opts);
     });
   
 </script>
@@ -70,20 +69,11 @@
     </label>
 
 
-    <!-- <label class="labeled-input">
-        <span class="flex justify-between pr-2">
-            Premint
-            <HelpTooltip placement="right" align="right" link="https://docs.openzeppelin.com/contracts/api/token/ERC4626#ERC4626-_mint-address-uint256-">
-            Create an initial amount of tokens for the deployer.</HelpTooltip>
-        </span>
-        <input bind:value={opts.premint} placeholder="0" pattern={premintPattern.source}>
-    </label> -->
-
 </section>
 
 
 
-<AccessOZControlSection bind:access={opts.access} required={requireAccessControl} />
+<!-- <AccessOZControlSection bind:access={opts.access} required={requireAccessControl} /> -->
 <!-- <UpgradeabilitySection bind:upgradeable={opts.upgradeable} /> -->
 
 <section class="controls-section">
@@ -97,7 +87,7 @@
   <label class="labeled-input">
     <span class="flex justify-between pr-2">
       Reference
-      <HelpTooltip align="right" placement="right" link="https://github.com/OpenZeppelin/openzeppelin-contracts">
+      <HelpTooltip align="right" placement="right" link="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20Lockbox.sol">
           The link to original code
       </HelpTooltip>
     </span>

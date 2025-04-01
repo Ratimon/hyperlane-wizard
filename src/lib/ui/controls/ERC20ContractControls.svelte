@@ -30,7 +30,7 @@
       //   premint: '', // default to empty premint in UI instead of 0
       // ...deployDefaults,
       contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
-      deployInfo: {  securityContact: 'Consult full internal deploy script at https://github.com/Ratimon/superfuse-forge', license: 'MIT'  },
+      deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
 
     $effect.pre(() => {
@@ -40,7 +40,7 @@
         //   premint: '', // default to empty premint in UI instead of 0
         // ...deployDefaults,
         contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
-        deployInfo: {  securityContact: 'Consult full internal deploy script at https://github.com/Ratimon/superfuse-forge', license: 'MIT'  },
+        deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });
 
@@ -177,7 +177,7 @@
   <label class="labeled-input">
     <span class="flex justify-between pr-2">
       Reference
-      <HelpTooltip align="right" placement="right" link="https://github.com/Ratimon/superfuse-forge/tree/main">
+      <HelpTooltip align="right" placement="right" link="https://github.com/OpenZeppelin/openzeppelin-contracts">
           The link to original code
       </HelpTooltip>
     </span>

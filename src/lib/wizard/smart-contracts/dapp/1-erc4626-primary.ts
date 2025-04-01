@@ -44,8 +44,8 @@ export function buildERC4626(opts: SharedERC4626Options): ContractBuilder {
 function addBase(c: ContractBuilder, name: string, symbol: string) {
 
   const IERC20 = {
-        name: 'IERC20',
-        path: '@openzeppelin-5_2_0/contracts/token/ERC20/IERC20.sol',
+    name: 'IERC20',
+    path: '@openzeppelin-5_2_0/contracts/token/ERC20/IERC20.sol',
   };
   c.addImportOnly(IERC20);
 
@@ -69,14 +69,6 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
 
   c.addImportWithNoInheritance(ERC20, [name, symbol])
 
-//   const Ownable = {
-//     name: 'Ownable',
-//     path: '@openzeppelin-5_2_0/contracts/access/Ownable.sol',
-//   };
-//   c.addParent(Ownable, [{lit: 'initialOwner'}]);
-  
-  
-
   c.addConstructorArgument({
     type: {
       name: 'IERC20',
@@ -84,18 +76,6 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
     },
     name: 'asset',
   });
-
-//   c.addConstructorArgument({
-//     type: {
-//       name: 'address',
-//       transpiled: false,
-//     },
-//     name: 'initialOwner',
-//   });
-
-
-
-
   
 }
 
