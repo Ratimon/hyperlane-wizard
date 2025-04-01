@@ -10,6 +10,10 @@ import type { SharedXERC20Options } from '../shared/dapp/1-option-xerc20';
 import {  defaults as xerc20Defaults } from '../shared/dapp/1-option-xerc20';
 import { printXERC20, isAccessControlRequired as xerc20IsAccessControlRequired } from './dapp/1-xerc20-primary';
 
+import type { SharedXERC20LockboxOptions } from '../shared/dapp/1-option-xerc20lockbox';
+import {  defaults as xerc20lockboxDefaults } from '../shared/dapp/1-option-xerc20lockbox';
+import { printXERC20Lockbox, isAccessControlRequired as xerc20lockboxIsAccessControlRequired } from './dapp/1-xerc20lockbox-primary';
+
 
 import type { CommonOptions } from '../shared/common-options';
 
@@ -48,4 +52,11 @@ export const xerc20: XERC20 = {
   print: printXERC20,
   defaults: xerc20Defaults,
   isAccessControlRequired: xerc20IsAccessControlRequired
+}
+
+export type XERC20Lockbox = WizardContractAPI<SharedXERC20LockboxOptions>;
+export const xerc20lockbox: XERC20Lockbox = {
+  print: printXERC20Lockbox,
+  defaults: xerc20lockboxDefaults,
+  isAccessControlRequired: xerc20lockboxIsAccessControlRequired
 }

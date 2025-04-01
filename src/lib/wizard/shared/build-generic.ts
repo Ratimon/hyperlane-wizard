@@ -11,10 +11,10 @@ import type { SharedHypERC20Options } from './dapp/2-option-hyp-erc20';
 
 import type { SharedFastHypERC20Options } from './dapp/2-option-fast-hyp-erc20';
 
-
 import type { SharedERC20Options} from './dapp/1-option-erc20';
 import type { SharedERC4626Options } from './dapp/1-option-erc4626';
 import type { SharedXERC20Options } from './dapp/1-option-xerc20';
+import type { SharedXERC20LockboxOptions } from './dapp/1-option-xerc20lockbox';
 
 
 export interface KindedFromOptions {
@@ -42,12 +42,14 @@ export interface KindedPrimaryTokenFromOptions {
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
     ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
     XERC20: { kind: 'XERC20' } & SharedXERC20Options;
+    XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
 }
 export type GenericPrimaryTokenFromOptions = KindedPrimaryTokenFromOptions[keyof KindedPrimaryTokenFromOptions];
 
 export interface KindedPrimaryTokenToOptions {
     // XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
     XERC20: { kind: 'XERC20' } & SharedXERC20Options;
+    XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
 }
 export type GenericPrimaryTokenToOptions = KindedPrimaryTokenToOptions[keyof KindedPrimaryTokenToOptions];
 
@@ -56,12 +58,6 @@ export interface KindedPrimaryTokenOptions {
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
     ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
     XERC20: { kind: 'XERC20' } & SharedXERC20Options;
+    XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
 }
 export type GenericPrimaryTokenOptions = KindedPrimaryTokenOptions[keyof KindedPrimaryTokenOptions];
-
-
-// export interface KindedPrimaryTokenToOptions {
-//     // XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
-//     XERC20: { kind: 'XERC20' } & SharedXERC20Options;
-// }
-// export type GenericPrimaryTokenToOptions = KindedPrimaryTokenToOptions[keyof KindedPrimaryTokenToOptions];

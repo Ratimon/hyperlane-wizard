@@ -28,7 +28,6 @@ export function withCommonDefaults(opts: CommonOptions): Required<CommonOptions>
     };
 }
 
-
 export interface SharedXERC20Options extends CommonOptions {
     contractName: string;
     tokenSymbol: string;

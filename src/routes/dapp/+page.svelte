@@ -1,158 +1,182 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
-    import type {Link } from '$lib/model/Link';
+  import type { PageData } from "./$types";
+  import type {Link } from '$lib/model/Link';
 
-    import type { Contract } from '$lib/wizard/smart-contracts';
-    import { ContractBuilder, buildContractGeneric } from '$lib/wizard/smart-contracts';
+  import type { Contract } from '$lib/wizard/smart-contracts';
+  import { ContractBuilder, buildContractGeneric } from '$lib/wizard/smart-contracts';
 
-    import type {
-      KindedPrimaryTokenFromOptions,
-      KindedPrimaryTokenToOptions,
-      KindPrimaryTokenFrom,
-      KindPrimaryTokenTo,
-      KindedFromOptions,
-      KindedToOptions,
-      KindFrom,
-      KindTo,
-      OptionsErrorMessages
-    } from '$lib/wizard/shared';
+  import type {
+    KindedPrimaryTokenFromOptions,
+    KindedPrimaryTokenToOptions,
+    KindPrimaryTokenFrom,
+    KindPrimaryTokenTo,
+    KindedFromOptions,
+    KindedToOptions,
+    KindFrom,
+    KindTo,
+    OptionsErrorMessages
+  } from '$lib/wizard/shared';
 
-    import { 
-      sanitizeKindPrimaryTokenFrom,
-      sanitizeKindPrimaryTokenTo,
-      OptionsError,
-      sanitizeKindFrom,
-      sanitizeKindTo,
-      sanitizeKind
-    } from '$lib/wizard/shared';
+  import { 
+    sanitizeKindPrimaryTokenFrom,
+    sanitizeKindPrimaryTokenTo,
+    OptionsError,
+    sanitizeKindFrom,
+    sanitizeKindTo,
+    sanitizeKind
+  } from '$lib/wizard/shared';
 
-    import {icons} from '$data/icon';
+  import {icons} from '$data/icon';
 
-    import AbstractIcon from '$lib/ui/icons/AbstractIcon.svelte';
-    import Background from '$lib/ui/layouts/Background.svelte';
-    import Button from "$lib/ui/buttons/Button.svelte";
-    // import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
-    import ScrollStep from '$lib/ui/components/ScrollStep.svelte';
-    import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
-    import OverflowMenu from '$lib/ui/layouts/OverflowMenu.svelte';
-    import ERC20ContractControls from '$lib/ui/controls/ERC20ContractControls.svelte';
-    import ERC4626ContractControls from '$lib/ui/controls/ERC4626ContractControls.svelte';
-    import XERC20ContractControls from '$lib/ui/controls/XERC20ContractControls.svelte';
+  import AbstractIcon from '$lib/ui/icons/AbstractIcon.svelte';
+  import Background from '$lib/ui/layouts/Background.svelte';
+  import Button from "$lib/ui/buttons/Button.svelte";
+  // import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
+  import ScrollStep from '$lib/ui/components/ScrollStep.svelte';
+  import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
+  import OverflowMenu from '$lib/ui/layouts/OverflowMenu.svelte';
+  import ERC20ContractControls from '$lib/ui/controls/ERC20ContractControls.svelte';
+  import ERC4626ContractControls from '$lib/ui/controls/ERC4626ContractControls.svelte';
+  import XERC20ContractControls from '$lib/ui/controls/XERC20ContractControls.svelte';
+  import XERC20LockboxContractControls from '$lib/ui/controls/XERC20LockboxContractControls.svelte';
 
-    type Props = {
-        data: PageData;
-    } & PageData;
+  type Props = {
+      data: PageData;
+  } & PageData;
 
-    let { data }: Props = $props();
+  let { data }: Props = $props();
 
-    const stepLinks : Link[] = [
-        {pathname: '#1-select-routes', title: 'Select Routes', navType: 'scroll' },
-        {pathname: '#2-primary-erc20', title: 'Deploy Primary ERC20', navType: 'scroll' },
-        {pathname: '#3-visualize', title: 'Visualize Bridge Flow', navType: 'scroll'},
-    ];
+  const stepLinks : Link[] = [
+      {pathname: '#1-select-routes', title: 'Select Routes', navType: 'scroll' },
+      {pathname: '#2-primary-erc20', title: 'Deploy Primary ERC20', navType: 'scroll' },
+      {pathname: '#3-visualize', title: 'Visualize Bridge Flow', navType: 'scroll'},
+  ];
 
-    let initialContractPrimaryTokenFromTab: string | undefined = $state('MyERC20');
-    let contractPrimaryTokenFromTab: KindPrimaryTokenFrom = $derived(sanitizeKindPrimaryTokenFrom(initialContractPrimaryTokenFromTab));
-    let allOptsPrimaryTokenFrom: { [k in KindPrimaryTokenFrom]?: Required<KindedPrimaryTokenFromOptions [k]> } =  $state({});
+  type Route = 'Pick a route'
+    | 'Collateral to Synthetic'
+    | 'xERC20 Routes';
+  type RouteState = 'SettingUproute'
+    | 'SettingTokens'
+    | 'DeployingPrimaryToken'
+    | 'DeployingRoutes';
 
-    let contractPrimaryTokenFrom: Contract = $state(new ContractBuilder('MyPrimaryToken'));
-    const optsPrimaryTokenFrom = $derived(allOptsPrimaryTokenFrom[contractPrimaryTokenFromTab]);
+  type WarpRoute = {
+    state: RouteState;
+    route: Route;
+    // tokenFrom: string;
+    // tokenTo: string;
+    // error?: unknown;
+  };
 
-    let errorsPrimaryTokenFrom : { [k in KindPrimaryTokenFrom]?: OptionsErrorMessages } =  $state({});
+  const warpRouteState: WarpRoute = $state({
+    state: 'SettingUproute',
+    route: 'Pick a route',
+    tokenFrom: '',
+    tokenTo: '',
+  });
 
-    $effect(() => {
-      if (optsPrimaryTokenFrom) {
-        try {
-          contractPrimaryTokenFrom = buildContractGeneric(optsPrimaryTokenFrom) as Contract;
-        //   deployContract = buildDeployGeneric(opts);
-        //   testContract = buildTestGeneric(opts);
 
-          errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = undefined;
-        } catch (e: unknown) {
-          if (e instanceof OptionsError) {
-              errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = e.messages;
-          } else {
-          throw e;
-          }
+
+  let initialContractPrimaryTokenFromTab: string | undefined = $state('MyERC20');
+  let contractPrimaryTokenFromTab: KindPrimaryTokenFrom = $derived(sanitizeKindPrimaryTokenFrom(initialContractPrimaryTokenFromTab));
+  let allOptsPrimaryTokenFrom: { [k in KindPrimaryTokenFrom]?: Required<KindedPrimaryTokenFromOptions [k]> } =  $state({});
+
+  let contractPrimaryTokenFrom: Contract = $state(new ContractBuilder('MyPrimaryToken'));
+  const optsPrimaryTokenFrom = $derived(allOptsPrimaryTokenFrom[contractPrimaryTokenFromTab]);
+
+  let errorsPrimaryTokenFrom : { [k in KindPrimaryTokenFrom]?: OptionsErrorMessages } =  $state({});
+
+  $effect(() => {
+    if (optsPrimaryTokenFrom) {
+      try {
+        contractPrimaryTokenFrom = buildContractGeneric(optsPrimaryTokenFrom) as Contract;
+      //   deployContract = buildDeployGeneric(opts);
+      //   testContract = buildTestGeneric(opts);
+
+        errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = undefined;
+      } catch (e: unknown) {
+        if (e instanceof OptionsError) {
+            errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = e.messages;
+        } else {
+        throw e;
         }
       }
-    });
+    }
+  });
 
-    let initialContractPrimaryTokenToTab: string | undefined = $state('MyERC20');
-    let contractPrimaryTokenToTab: KindPrimaryTokenTo = $derived(sanitizeKindPrimaryTokenTo(initialContractPrimaryTokenToTab));
-    let allOptsPrimaryTokenTo: { [k in KindPrimaryTokenTo]?: Required<KindedPrimaryTokenToOptions [k]> } =  $state({});
+  let initialContractPrimaryTokenToTab: string | undefined = $state('MyERC20');
+  let contractPrimaryTokenToTab: KindPrimaryTokenTo = $derived(sanitizeKindPrimaryTokenTo(initialContractPrimaryTokenToTab));
+  let allOptsPrimaryTokenTo: { [k in KindPrimaryTokenTo]?: Required<KindedPrimaryTokenToOptions [k]> } =  $state({});
 
-    let contractPrimaryTokenTo: Contract = $state(new ContractBuilder('MyPrimaryToken'));
-    const optsPrimaryTokenTo = $derived(allOptsPrimaryTokenTo[contractPrimaryTokenToTab]);
+  let contractPrimaryTokenTo: Contract = $state(new ContractBuilder('MyPrimaryToken'));
+  const optsPrimaryTokenTo = $derived(allOptsPrimaryTokenTo[contractPrimaryTokenToTab]);
 
-    let errorsPrimaryTokenTo : { [k in KindPrimaryTokenTo]?: OptionsErrorMessages } =  $state({});
+  let errorsPrimaryTokenTo : { [k in KindPrimaryTokenTo]?: OptionsErrorMessages } =  $state({});
 
-    $effect(() => {
-      if (optsPrimaryTokenTo) {
-        try {
-          contractPrimaryTokenTo = buildContractGeneric(optsPrimaryTokenTo) as Contract;
-        //   deployContract = buildDeployGeneric(opts);
-        //   testContract = buildTestGeneric(opts);
+  $effect(() => {
+    if (optsPrimaryTokenTo) {
+      try {
+        contractPrimaryTokenTo = buildContractGeneric(optsPrimaryTokenTo) as Contract;
+      //   deployContract = buildDeployGeneric(opts);
+      //   testContract = buildTestGeneric(opts);
 
-          errorsPrimaryTokenTo[contractPrimaryTokenToTab] = undefined;
-        } catch (e: unknown) {
-          if (e instanceof OptionsError) {
-              errorsPrimaryTokenTo[contractPrimaryTokenToTab] = e.messages;
-          } else {
-          throw e;
-          }
+        errorsPrimaryTokenTo[contractPrimaryTokenToTab] = undefined;
+      } catch (e: unknown) {
+        if (e instanceof OptionsError) {
+            errorsPrimaryTokenTo[contractPrimaryTokenToTab] = e.messages;
+        } else {
+        throw e;
         }
       }
-    });
-
-    type Route = 'Pick a route'
-      | 'Collateral to Synthetic'
-      | 'xERC20 Routes';
-    type RouteState = 'SettingUproute'
-      | 'SettingTokens'
-      | 'DeployingPrimaryToken'
-      | 'DeployingRoutes';
-
-    type WarpRoute = {
-      state: RouteState;
-      route: Route;
-      // tokenFrom: string;
-      // tokenTo: string;
-      // error?: unknown;
-    };
-
-    const warpRouteState: WarpRoute = $state({
-      state: 'SettingUproute',
-      route: 'Pick a route',
-      tokenFrom: '',
-      tokenTo: '',
-    });
-
-    function selectRoute(warpRoute: WarpRoute) {
-      warpRouteState.state = 'SettingTokens';
-      warpRouteState.route = warpRoute.route;
-
-      if (warpRoute.route === 'Collateral to Synthetic') {
-        initialContractFromTab = 'HypERC20Collateral'
-        initialContractToTab = 'HypERC20'
-
-      } else if (warpRoute.route === 'xERC20 Routes') {
-        initialContractFromTab = 'xERC20Lockbox'
-        initialContractToTab = 'xERC20Lockbox'
-      }
     }
+  });
 
-    let openDropdownFrom: boolean = $state(false)
-    function selectTokenFrom(contractName: string) {
-      initialContractFromTab = contractName
-      openDropdownFrom = false
-    }
+  function selectRoute(warpRoute: WarpRoute) {
+    warpRouteState.state = 'SettingTokens';
+    warpRouteState.route = warpRoute.route;
 
-    let openDropdownTo: boolean = $state(false)
-    function selectTokenTo(contractName: string) {
-      initialContractToTab = contractName
-      openDropdownTo = false
+    if (warpRoute.route === 'Collateral to Synthetic') {
+      initialContractFromTab = 'HypERC20Collateral'
+      initialContractPrimaryTokenFromTab = 'ERC20'
+      initialContractToTab = 'HypERC20'
+
+    } else if (warpRoute.route === 'xERC20 Routes') {
+      initialContractFromTab = 'HypXERC20Lockbox'
+      initialContractToTab = 'HypXERC20Lockbox'
+      initialContractPrimaryTokenFromTab = 'XERC20Lockbox'
+      initialContractPrimaryTokenToTab = 'XERC20Lockbox'
     }
+  }
+
+  let openDropdownFrom: boolean = $state(false)
+  function selectTokenFrom(contractName: string) {
+    initialContractFromTab = contractName
+    openDropdownFrom = false
+  }
+
+  let openDropdownTo: boolean = $state(false)
+  function selectTokenTo(contractName: string) {
+    initialContractToTab = contractName
+    openDropdownTo = false
+  }
+
+  function comfirmRoute( primaryFromToken: string, primaryToToken: string ) {
+    warpRouteState.state = 'DeployingPrimaryToken'
+    initialContractPrimaryTokenFromTab = primaryFromToken;
+    initialContractPrimaryTokenToTab = primaryToToken;
+  }
+
+  let isPrimaryTokenFromDeployed: boolean = $state(true);
+
+  function togglePrimaryTokenFromDeployed( ) {
+    isPrimaryTokenFromDeployed = !isPrimaryTokenFromDeployed
+  }
+
+  let isPrimaryTokenToDeployed: boolean = $state(true);
+
+  function togglePrimaryTokenToDeployed( ) {
+    isPrimaryTokenToDeployed = !isPrimaryTokenToDeployed
+  }
 
   let contractFromLists = [
     {
@@ -271,11 +295,10 @@
     contractToLists.filter(contract => contract.route === warpRouteState.route)
   )
 
-
   let initialContractToTab: string | undefined = $state(undefined);
   let contractToTab : KindTo = $derived(sanitizeKindTo(initialContractToTab));
 
-  let contactToPrimaryStandard:  string = $state('xERC20')
+  let contactToPrimaryStandard:  string = $state('xERC20Lockbox')
 
   $effect(() => {
     if (initialContractToTab) {
@@ -284,24 +307,6 @@
     }
   })
 
-
-  function comfirmRoute( primaryFromToken: string, primaryToToken: string ) {
-    warpRouteState.state = 'DeployingPrimaryToken'
-    initialContractPrimaryTokenFromTab = primaryFromToken;
-    initialContractPrimaryTokenToTab = primaryToToken;
-  }
-
-  let isPrimaryTokenFromDeployed: boolean = $state(true);
-
-  function togglePrimaryTokenFromDeployed( ) {
-    isPrimaryTokenFromDeployed = !isPrimaryTokenFromDeployed
-  }
-
-  let isPrimaryTokenToDeployed: boolean = $state(true);
-
-  function togglePrimaryTokenToDeployed( ) {
-    isPrimaryTokenToDeployed = !isPrimaryTokenToDeployed
-  }
 
 </script>
 
@@ -523,6 +528,11 @@
                       XERC20
                     </button>
                   {/if}
+                  {#if contractPrimaryTokenFromTab === 'XERC20Lockbox'}
+                    <button class:selected={contractPrimaryTokenFromTab === 'XERC20Lockbox'} onclick={() => initialContractPrimaryTokenFromTab = 'XERC20Lockbox'}>
+                      XERC20Lockbox
+                    </button>
+                  {/if}
                 </OverflowMenu>
               </Background>
             </div>
@@ -546,6 +556,12 @@
               {#if contractPrimaryTokenFromTab === 'XERC20'}
                 <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20'}>
                   <XERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20!}/>
+                </div>
+              {/if}
+
+              {#if contractPrimaryTokenFromTab === 'XERC20Lockbox'}
+                <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20Lockbox'}>
+                  <XERC20LockboxContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20Lockbox!}/>
                 </div>
               {/if}
               
@@ -610,6 +626,11 @@
                       XERC20
                     </button>
                   {/if}
+                  {#if contractPrimaryTokenToTab === 'XERC20Lockbox'}
+                    <button class:selected={contractPrimaryTokenToTab === 'XERC20Lockbox'} onclick={() => initialContractPrimaryTokenToTab = 'XERC20Lockbox'}>
+                      XERC20Lockbox
+                    </button>
+                  {/if}
                 </OverflowMenu>
               </Background>
             </div>
@@ -623,6 +644,12 @@
                   <XERC20ContractControls bind:opts={allOptsPrimaryTokenTo.XERC20!}/>
                 </div>
               {/if}
+
+              {#if contractPrimaryTokenToTab === 'XERC20Lockbox'}
+                <div class:hidden={contractPrimaryTokenToTab !== 'XERC20Lockbox'}>
+                  <XERC20LockboxContractControls bind:opts={allOptsPrimaryTokenTo.XERC20Lockbox!}/>
+                </div>
+              {/if}
               
             </div>
           {/snippet}
@@ -632,10 +659,6 @@
       {/if}
 
     {/if}
-
-
-
-
 
 
 

@@ -13,12 +13,15 @@ import { buildERC4626 } from './dapp/1-erc4626-primary';
 import type { SharedXERC20Options} from '../shared/dapp/1-option-xerc20';
 import { buildXERC20 } from './dapp/1-xerc20-primary';
 
+import type { SharedXERC20LockboxOptions } from '../shared/dapp/1-option-xerc20lockbox';
+import { buildXERC20Lockbox } from './dapp/1-xerc20lockbox-primary';
 
 export interface KindedOptions {
     HypERC20Collateral : {kind: 'HypERC20Collateral'} & SharedHypERC20CollateralOptions;
     ERC20: { kind: 'ERC20' } & SharedERC20Options;
     ERC4626: { kind: 'ERC4626' } & SharedERC4626Options;
     XERC20: { kind: 'XERC20' } & SharedXERC20Options;
+    XERC20Lockbox: { kind: 'XERC20Lockbox' } & SharedXERC20LockboxOptions;
 }
 
 export type GenericOptions = KindedOptions[keyof KindedOptions];
@@ -56,11 +59,12 @@ export function buildContractGeneric(opts: GenericOptions) {
         case 'XERC20':
             return buildXERC20(opts);
 
-        // tdo : bring when there are at least two casess
+        case 'XERC20Lockbox':
+            return buildXERC20Lockbox(opts);
         
-        // default:
-        //     const _: never = opts;
-        //     throw new Error('Unknown Contract');
+        default:
+            const _: never = opts;
+            throw new Error('Unknown Contract');
     }
 }
   

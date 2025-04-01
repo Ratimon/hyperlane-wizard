@@ -75,9 +75,7 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
   });
 
   c.addConstructorCode(`lockbox = _lockbox;`);
-
   
-
 }
 
 

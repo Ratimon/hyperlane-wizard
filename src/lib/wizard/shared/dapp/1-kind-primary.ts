@@ -22,6 +22,8 @@ function isKindPrimaryTokenFrom<T>(value: KindPrimaryTokenFrom | T): value is Ki
       return true;
     case 'XERC20':
       return true;
+    case 'XERC20Lockbox':
+      return true;
 
     default: {
       // Static assert that we've checked all kinds.

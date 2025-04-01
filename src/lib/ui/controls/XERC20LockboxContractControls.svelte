@@ -8,15 +8,14 @@
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
     import type { KindedPrimaryTokenOptions } from '$lib/wizard/shared';
   
-    import { erc4626 } from '$lib/wizard/smart-contracts';
-    // import { deployERC4626 } from '$lib/wizard/deploy-scripts';
+    import { xerc20lockbox } from '$lib/wizard/smart-contracts';
   
   
-    const contractDefaults = erc4626.defaults;
+    const contractDefaults = xerc20lockbox.defaults;
     // const deployDefaults = deployERC4626Votes.defaults;
 
     type Props = {
-      opts: Required<KindedPrimaryTokenOptions['ERC4626']>;
+      opts: Required<KindedPrimaryTokenOptions['XERC20Lockbox']>;
     };
 
     let {
@@ -24,20 +23,19 @@
     }: Props = $props();
 
     if (opts === undefined) opts = {
-      kind: 'ERC4626',
+      kind: 'XERC20Lockbox',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
 
     $effect.pre(() => {
       if (opts === undefined) opts = {
-        kind: 'ERC4626',
+        kind: 'XERC20Lockbox',
         ...contractDefaults,
-        //   premint: '', // default to empty premint in UI instead of 0
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });
@@ -45,7 +43,7 @@
     let requireAccessControl = $state(true);
 
     $effect(() => {
-      requireAccessControl = erc4626.isAccessControlRequired!(opts);
+      requireAccessControl = xerc20lockbox.isAccessControlRequired!(opts);
     });
   
 </script>
@@ -69,20 +67,11 @@
     </label>
 
 
-    <!-- <label class="labeled-input">
-        <span class="flex justify-between pr-2">
-            Premint
-            <HelpTooltip placement="right" align="right" link="https://docs.openzeppelin.com/contracts/api/token/ERC4626#ERC4626-_mint-address-uint256-">
-            Create an initial amount of tokens for the deployer.</HelpTooltip>
-        </span>
-        <input bind:value={opts.premint} placeholder="0" pattern={premintPattern.source}>
-    </label> -->
-
 </section>
 
 
 
-<AccessOZControlSection bind:access={opts.access} required={requireAccessControl} />
+<!-- <AccessOZControlSection bind:access={opts.access} required={requireAccessControl} /> -->
 <!-- <UpgradeabilitySection bind:upgradeable={opts.upgradeable} /> -->
 
 <section class="controls-section">
@@ -96,7 +85,7 @@
   <label class="labeled-input">
     <span class="flex justify-between pr-2">
       Reference
-      <HelpTooltip align="right" placement="right" link="https://github.com/OpenZeppelin/openzeppelin-contracts">
+      <HelpTooltip align="right" placement="right" link="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20Lockbox.sol">
           The link to original code
       </HelpTooltip>
     </span>

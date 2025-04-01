@@ -18,8 +18,10 @@ export {
     erc20,
     erc4626,
     xerc20,
+    xerc20lockbox,
 } from './api';
 
 export { buildERC20 } from './dapp/1-erc20-primary';
 export { buildERC4626 } from './dapp/1-erc4626-primary';
 export { buildXERC20 } from './dapp/1-xerc20-primary';
+export { buildXERC20Lockbox } from './dapp/1-xerc20lockbox-primary';

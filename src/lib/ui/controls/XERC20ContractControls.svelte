@@ -6,7 +6,7 @@
     // import UpgradeabilitySection from '$lib/ui/controls/UpgradeabilitySection.svelte';
 
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
-    import type { KindedPrimaryTokenToOptions } from '$lib/wizard/shared';
+    import type { KindedPrimaryTokenOptions } from '$lib/wizard/shared';
   
     import { xerc20 } from '$lib/wizard/smart-contracts';
   
@@ -15,7 +15,7 @@
     // const deployDefaults = deployERC4626Votes.defaults;
 
     type Props = {
-      opts: Required<KindedPrimaryTokenToOptions['XERC20']>;
+      opts: Required<KindedPrimaryTokenOptions['XERC20']>;
     };
 
     let {
@@ -25,9 +25,8 @@
     if (opts === undefined) opts = {
       kind: 'XERC20',
       ...contractDefaults,
-      //   premint: '', // default to empty premint in UI instead of 0
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
 
@@ -35,9 +34,8 @@
       if (opts === undefined) opts = {
         kind: 'XERC20',
         ...contractDefaults,
-        //   premint: '', // default to empty premint in UI instead of 0
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/OpenZeppelin/openzeppelin-contracts', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });

@@ -78,4 +78,3 @@ function addBase(c: ContractBuilder, name: string, symbol: string) {
   });
   
 }
-
