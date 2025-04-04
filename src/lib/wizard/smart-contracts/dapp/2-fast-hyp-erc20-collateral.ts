@@ -28,7 +28,7 @@ export function buildFastHypERC20Collateral(opts: SharedFastHypERC20CollateralOp
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: 'erc20' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 
@@ -80,12 +80,12 @@ export function buildFastHypERC20Collateral(opts: SharedFastHypERC20CollateralOp
   c.addModifier('virtual override(FastTokenRouter, TokenRouter)', functions._handle);
   c.addFunctionCode(`FastTokenRouter._handle(_origin, _sender, _message);`, functions._handle);
 
-
   //  fastTransferTo
   c.addModifier('override', functions._fastTransferTo);
   c.addFunctionCode(`wrappedToken.safeTransfer(_recipient, _amount);`, functions._fastTransferTo);
 
   //  _fastRecieveFrom
+  c.addModifier('override', functions._fastRecieveFrom);
   c.addFunctionCode(`wrappedToken.safeTransferFrom(_sender, address(this), _amount);`, functions._fastRecieveFrom);
 
 
@@ -101,11 +101,10 @@ const functions = defineFunctions({
       args: [
         { name: '_origin', type: 'uint32' },
         { name: '_sender', type: 'bytes32' },
-        { name: '_message', type: 'calldata bytes' },
+        { name: '_message', type: 'bytes calldata' },
       ],
     },
   
-
     _fastTransferTo: {
       kind: 'internal' as const,
       args: [

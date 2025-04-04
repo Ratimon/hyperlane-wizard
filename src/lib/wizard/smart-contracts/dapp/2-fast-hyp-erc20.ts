@@ -101,7 +101,7 @@ const functions = defineFunctions({
       kind: 'internal' as const,
       args: [
         { name: '_origin', type: 'uint32' },
-        { name: '_sender', type: 'address' },
+        { name: '_sender', type: 'bytes32' },
         { name: '_message', type: 'bytes calldata' },
       ],
     },

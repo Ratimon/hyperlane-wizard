@@ -16,7 +16,7 @@
       kind: 'HypERC4626OwnerCollateral',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC4626', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypERC4626OwnerCollateral.sol', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
   
@@ -25,7 +25,7 @@
         kind: 'HypERC4626OwnerCollateral',
         ...contractDefaults,
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC4626', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypERC4626OwnerCollateral.sol', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });

@@ -16,7 +16,7 @@
       kind: 'HypXERC20',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xXERC20', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code athttps://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypXERC20.sol', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
   
@@ -25,7 +25,7 @@
         kind: 'HypXERC20',
         ...contractDefaults,
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xXERC20', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypXERC20.sol', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });

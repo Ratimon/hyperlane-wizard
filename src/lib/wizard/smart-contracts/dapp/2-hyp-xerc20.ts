@@ -34,7 +34,7 @@ export function buildHypXERC20(opts: SharedHypXERC20Options): Contract {
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: '_xerc20' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 

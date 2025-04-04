@@ -28,7 +28,7 @@ export function buildHypFiatToken(opts: SharedHypFiatTokenOptions): Contract {
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: '_fiatToken' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 
@@ -56,11 +56,19 @@ export function buildHypFiatToken(opts: SharedHypFiatTokenOptions): Contract {
 
 
   //  _transferFromSender
-  c.addModifier('override ', functions._transferFromSender);
-  c.addFunctionCode(`require(
+  c.addModifier('override', functions._transferFromSender);
+  c.addFunctionCode(`// transfer amount to address(this)
+        metadata = super._transferFromSender(_amount);
+        // burn amount of address(this) balance
+        IFiatToken(address(wrappedToken)).burn(_amount);`, functions._transferFromSender);
+
+  // _transferTo
+  c.addModifier('override', functions._transferTo);
+  c.addFunctionCode(`// transfer amount to address(this)
+        require(
             IFiatToken(address(wrappedToken)).mint(_recipient, _amount),
             "FiatToken mint failed"
-        );`, functions._transferFromSender);
+        );`, functions._transferTo);
 
   setInfo(c, allOpts.contractInfo);
 

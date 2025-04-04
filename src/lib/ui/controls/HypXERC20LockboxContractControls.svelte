@@ -16,7 +16,7 @@
       kind: 'HypXERC20Lockbox',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xXERC20Lockbox', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypXERC20Lockbox.sol', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
   
@@ -25,7 +25,7 @@
         kind: 'HypXERC20Lockbox',
         ...contractDefaults,
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xXERC20Lockbox', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypXERC20Lockbox.sol', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });

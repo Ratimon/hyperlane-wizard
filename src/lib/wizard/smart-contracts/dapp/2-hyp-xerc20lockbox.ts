@@ -48,7 +48,7 @@ export function buildHypXERC20Lockbox(opts: SharedHypXERC20LockboxOptions): Cont
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: 'address(IXERC20Lockbox(_lockbox).ERC20())' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 
@@ -93,7 +93,7 @@ export function buildHypXERC20Lockbox(opts: SharedHypXERC20LockboxOptions): Cont
 
 
   //  initialize
-  c.addModifier('override initialize', functions.initialize);
+  c.addModifier('override initializer', functions.initialize);
   c.addFunctionCode(`approveLockbox();
         _MailboxClient_initialize(_hook, _ism, _owner);`, functions.initialize);
 

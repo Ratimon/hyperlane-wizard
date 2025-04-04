@@ -15,25 +15,21 @@ function isKindFrom<T>(value: KindFrom | T): value is KindFrom {
   switch (value) {
     case 'HypERC20Collateral':
       return true;
-    // case 'HypERC4626Collateral':
-    //   return true;
-    // case 'HypFiatToken':
-    //   return true;
-    // case 'HypERC4626OwnerCollateral':
-    //   return true;
-    // case 'HypERC20':
-    //   return true;
-    // case 'FastHypERC20Collateral':
-    //   return true;
-    // case 'HypXERC20':
-    //   return true;
-    // case 'HypXERC20Lockbox':
-    //   return true;
-    
-    // case 'HypERC20':
-    //   return true;
-    // case 'FastHypERC20':
-    //   return true;
+    case 'HypFiatToken':
+      return true;
+    case 'HypERC4626Collateral':
+      return true;
+
+    case 'HypERC4626OwnerCollateral':
+      return true;
+    case 'HypERC20':
+      return true;
+    case 'FastHypERC20Collateral':
+      return true;
+    case 'HypXERC20':
+      return true;
+    case 'HypXERC20Lockbox':
+      return true;
 
 
     default: {

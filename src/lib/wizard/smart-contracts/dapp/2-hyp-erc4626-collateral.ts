@@ -40,14 +40,14 @@ export function buildHypERC4626Collateral(opts: SharedHypERC4626CollateralOption
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: '_vault.asset()' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 
   
   const ERC4626 = {
     name: 'ERC4626',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC4626.so',
+    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol',
   };
   c.addImportOnly(ERC4626);
 
@@ -141,55 +141,54 @@ export function buildHypERC4626Collateral(opts: SharedHypERC4626CollateralOption
 
 const functions = defineFunctions({
 
-    initialize: {
-      kind: 'public' as const,
-      args: [
-        { name: '_hook', type: 'address' },
-        { name: '_interchainSecurityModule', type: 'address' },
-        { name: '_owner', type: 'address' },
-      ],
-    },
-  
-    _transferRemote: {
-      kind: 'internal' as const,
-      args: [
-        { name: '_destination', type: 'uint32' },
-        { name: '_recipient', type: 'bytes32' },
-        { name: '_amount', type: 'uint256' },
-        { name: '_value', type: 'uint256' },
-        { name: '_hookMetadata', type: 'bytes memory' },
-        { name: '_hook', type: 'address' },
-      ],
-      returns: ['bytes32 messageId'],
-      mutability: 'view' as const,
-    },
-  
-  
-    _depositIntoVault: {
-      kind: 'internal' as const,
-      args: [
-        { name: '_amount', type: 'uint256' },
-      ],
-      returns: ['uint256'],
-    },
+  initialize: {
+    kind: 'public' as const,
+    args: [
+      { name: '_hook', type: 'address' },
+      { name: '_interchainSecurityModule', type: 'address' },
+      { name: '_owner', type: 'address' },
+    ],
+  },
 
-    _transferTo: {
-      kind: 'internal' as const,
-      args: [
-        { name: '_recipient', type: 'address' },
-        { name: '_amount', type: 'uint256' },
-        { name: '_metadata', type: 'bytes calldata' },
-      ],
-    },
+  _transferRemote: {
+    kind: 'internal' as const,
+    args: [
+      { name: '_destination', type: 'uint32' },
+      { name: '_recipient', type: 'bytes32' },
+      { name: '_amount', type: 'uint256' },
+      { name: '_value', type: 'uint256' },
+      { name: '_hookMetadata', type: 'bytes memory' },
+      { name: '_hook', type: 'address' },
+    ],
+    returns: ['bytes32 messageId'],
+  },
 
-    rebase: {
-      kind: 'public' as const,
-      args: [
-        { name: '_destinationDomain', type: 'uint32' },
-        { name: '_hookMetadata', type: 'bytes calldata' },
-        { name: '_hook', type: 'address' },
-      ],
-    },
+
+  _depositIntoVault: {
+    kind: 'internal' as const,
+    args: [
+      { name: '_amount', type: 'uint256' },
+    ],
+    returns: ['uint256'],
+  },
+
+  _transferTo: {
+    kind: 'internal' as const,
+    args: [
+      { name: '_recipient', type: 'address' },
+      { name: '_amount', type: 'uint256' },
+      { name: '', type: 'bytes calldata' },
+    ],
+  },
+
+  rebase: {
+    kind: 'public' as const,
+    args: [
+      { name: '_destinationDomain', type: 'uint32' },
+      { name: '_hookMetadata', type: 'bytes calldata' },
+      { name: '_hook', type: 'address' },
+    ],
+  },
   
   
 });

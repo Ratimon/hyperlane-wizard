@@ -147,8 +147,8 @@
 
     if (warpRoute.route === 'Collateral to Synthetic') {
       initialContractFromTab = 'HypERC20Collateral'
-      initialContractPrimaryTokenFromTab = 'ERC20'
       initialContractToTab = 'HypERC20'
+      initialContractPrimaryTokenFromTab = 'ERC20'
 
     } else if (warpRoute.route === 'xERC20 Routes') {
       initialContractFromTab = 'HypXERC20Lockbox'

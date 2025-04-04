@@ -142,7 +142,7 @@ const functions = defineFunctions({
       args: [
         { name: '_recipient', type: 'address' },
         { name: '_amount', type: 'uint256' },
-        { name: '_metadata', type: 'bytes calldata' },
+        { name: '', type: 'bytes calldata' },
       ],
     },
   

@@ -57,6 +57,7 @@
     $effect(() => {
       contractOneTab = sanitizeKind(contractOneTab);
 
+      console.log('contractOneTab', contractOneTab);
 
       codeOne = printContract(contractOneInstance as Contract);
 
@@ -106,6 +107,8 @@
     $effect(() => {
       contractTwoTab = sanitizeKind(contractTwoTab);
 
+      console.log('contractTwoTab', contractTwoTab);
+
       codeTwo = printContract(contractTwoInstance as Contract);
       highlightedCodeTwo = injectHyperlinks(hljs.highlight(codeTwo, {language: 'solidity'} ).value);
     });
@@ -145,7 +148,7 @@
               {#if isScriptCopied}
                 <AbstractIcon name={icons.Check.name} width="24" height="24" />Copied
               {:else}
-                <AbstractIcon name={icons.Copy.name} width="24" height="24" />Copy .sol Code
+                <AbstractIcon name={icons.Copy.name} width="24" height="24" />Copy Source .sol Code
               {/if}
             </div>
           </button>
@@ -163,7 +166,7 @@
               {#if isScriptTwoCopied}
                 <AbstractIcon name={icons.Check.name} width="24" height="24" />Copied
               {:else}
-                <AbstractIcon name={icons.Copy.name} width="24" height="24" />Copy Script Code
+                <AbstractIcon name={icons.Copy.name} width="24" height="24" />Copy Destination .sol Code
               {/if}
             </div>
           </button>

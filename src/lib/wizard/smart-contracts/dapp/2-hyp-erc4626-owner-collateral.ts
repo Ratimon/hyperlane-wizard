@@ -29,13 +29,13 @@ export function buildHypERC4626OwnerCollateral(opts: SharedHypERC4626OwnerCollat
 
   const HypERC20Collateral = {
     name: 'HypERC20Collateral',
-    path: '@hyperlane-core/token/HypERC20Collateral.so',
+    path: '@hyperlane-core/token/HypERC20Collateral.sol',
   };
   c.addParent(HypERC20Collateral, [{ lit: '_vault.asset()' }, { lit: '_scale' }, { lit: '_mailbox' }]);
 
   const ERC4626 = {
     name: 'ERC4626',
-    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC4626.so',
+    path: '@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol',
   };
   c.addImportOnly(ERC4626);
 
@@ -134,7 +134,6 @@ const functions = defineFunctions({
       args: [
         { name: '_amount', type: 'uint256' },
       ],
-      returns: ['uint256'],
     },
 
     _transferTo: {
@@ -142,7 +141,7 @@ const functions = defineFunctions({
       args: [
         { name: '_recipient', type: 'address' },
         { name: '_amount', type: 'uint256' },
-        { name: '_metadata', type: 'bytes calldata' },
+        { name: '', type: 'bytes calldata' },
       ],
     },
 

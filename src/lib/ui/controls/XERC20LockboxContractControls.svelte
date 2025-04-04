@@ -26,7 +26,7 @@
       kind: 'XERC20Lockbox',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20Lockbox.sol', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
 
@@ -35,7 +35,7 @@
         kind: 'XERC20Lockbox',
         ...contractDefaults,
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20Lockbox.sol', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });

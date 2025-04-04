@@ -16,7 +16,7 @@
       kind: 'HypFiatToken',
       ...contractDefaults,
       // ...deployDefaults,
-      contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xFiatToken', license: 'MIT'  },
+      contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypFiatToken.sol', license: 'MIT'  },
       deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
     };
   
@@ -25,7 +25,7 @@
         kind: 'HypFiatToken',
         ...contractDefaults,
         // ...deployDefaults,
-        contractInfo: {  securityContact: 'Consult full code at https://github.com/defi-wonderland/xFiatToken', license: 'MIT'  },
+        contractInfo: {  securityContact: 'Consult full code at https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/main/solidity/contracts/token/extensions/HypFiatToken.sol', license: 'MIT'  },
         deployInfo: {  securityContact: 'Consult full internal deploy script at ...', license: 'MIT'  },
       }
     });
