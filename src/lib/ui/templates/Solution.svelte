@@ -6,7 +6,7 @@
 
 </script>
 
-<LandingSection title="Customizable Interoperability" subtitle="Product Features">
+<LandingSection title="Customizable Interoperable Bridges" subtitle="For dApp Developers">
     <div class="mx-4 grid grid-cols-1 gap-y-12 md:grid-cols-2 lg:mx-32">
       <SolutionModel>
         {#snippet button1()}
@@ -20,7 +20,7 @@
             </a>
         {/snippet}
         {#snippet button2()}
-            <a href={'/rollup'}>
+            <a href={'/dapp'}>
                 <Button
                     variant="outline"
                     type="submit"

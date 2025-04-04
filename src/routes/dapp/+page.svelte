@@ -202,21 +202,6 @@
 
   function comfirmStep2( ) {
 
-    // if (warpRouteState.route === 'Collateral to Synthetic') {
-
-    //   if (warpRouteState.tokenFromAddress == '0x') {
-    //     return
-    //   }
-      
-    // }
-
-    // if (warpRouteState.route === 'xERC20 Routes') {
-
-    //   if (warpRouteState.tokenFromAddress == '0x' || warpRouteState.tokenToAddress == '0x') {
-    //     return
-    //   }
-      
-    // }
 
     if (areAddressesFilled()) {
       warpRouteState.state = 'DeployingRoutes'
@@ -385,6 +370,17 @@
 
 </section>
 
+<div class="m-8">
+  <a
+      href="/"
+      class="link !no-underline text-base-content/80 hover:text-base-content inline-flex items-center gap-1"
+      title="Back to Homee"
+  >
+      <AbstractIcon name={icons.ArrowBack.name} width="20" height="20" />
+      Back to Home
+  </a>
+</div>
+
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[0].pathname}>
     <div class="divider divider-primary ">
@@ -518,12 +514,6 @@
       Complete step One first!
     </p>
   </div>
-<!-- {:else if warpRouteState.state == 'DeployingRoutes'}
-  <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
-    <p class="font-bold text-xl">
-      Complete step One first!
-    </p>
-  </div> -->
 {:else}
   <div class="container flex flex-col items-center justify-center gap-y-8 p-8 mx-8">
     <!-- Source Chain -->

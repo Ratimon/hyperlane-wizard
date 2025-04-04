@@ -12,28 +12,28 @@
     let { button1, button2 }: Props = $props();
   
 </script>
-  
 <SolutionCard
-    name="For dApp developers"
+    name="Collateral-Backed to Synthetic"
     button={button1}
     popular={false}
 >
-    <SolutionFeature>Select Bridge Type from Hyperlane contract</SolutionFeature>
-    <SolutionFeature>Bridge: Collateral to Synthetic</SolutionFeature>
-    <SolutionFeature>Bridge: xERC20</SolutionFeature>
+    <SolutionFeature>Visualize Different Hyperlane's Bridge Smart contracts</SolutionFeature>
+    <SolutionFeature>Select & Modify Token Features</SolutionFeature>
+    <SolutionFeature>ERC20 or ERC4626</SolutionFeature>
+    <SolutionFeature>Fiat-Backed Tokens: Specific mint and burn ops </SolutionFeature>
     <SolutionFeature>Fast Fee: to incentivize LPs</SolutionFeature>
     <SolutionFeature>Fast Transfer: Unique transfer identification</SolutionFeature>
 </SolutionCard>
 
 {#if button2}
     <SolutionCard
-        name="For rollup developers"
+        name="xERC20"
         button={button2}
         popular={false}
     >
-        <SolutionFeature>Customize your Own Chain</SolutionFeature>
-        <SolutionFeature>Bridge: Native to Native</SolutionFeature>
-        <SolutionFeature>Bridge: Native to Synthetic</SolutionFeature>
-        <SolutionFeature>Fast Native Transfers: via Custom Gas Tokens</SolutionFeature>
+        <SolutionFeature>Visualize Different Hyperlane's Bridge Smart contract</SolutionFeature>
+        <SolutionFeature>Select & Modify Token Features</SolutionFeature>
+        <SolutionFeature>XERC20 or XERC20Lockbox</SolutionFeature>
+        <SolutionFeature>Warp Route Limits Management</SolutionFeature>
     </SolutionCard>
 {/if}
