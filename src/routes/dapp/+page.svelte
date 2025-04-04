@@ -62,6 +62,7 @@
       {pathname: '#1-select-routes', title: 'Select Routes', navType: 'scroll' },
       {pathname: '#2-primary', title: 'Deploy dependency contract', navType: 'scroll' },
       {pathname: '#3-deploy', title: 'Deploy & Visualize', navType: 'scroll'},
+      {pathname: '#4-management', title: 'Contract Management (Optional)', navType: 'scroll'},
   ];
 
   type Route = 'Pick a route'
@@ -70,7 +71,8 @@
   type RouteState = 'SettingUproute'
     | 'SettingTokens'
     | 'DeployingPrimaryToken'
-    | 'DeployingRoutes';
+    | 'DeployingRoutes'
+    | 'ManagingContract';
 
   type WarpRoute = {
     state: RouteState;
@@ -192,21 +194,16 @@
     if (warpRouteState.route === 'Collateral to Synthetic') {
       return warpRouteState.tokenFromAddress !== '0x'
     }
-
     if (warpRouteState.route === 'xERC20 Routes') {
       return warpRouteState.tokenFromAddress !== '0x' && warpRouteState.tokenToAddress !== '0x'
     }
-
     return false
   }
 
-  function comfirmStep2( ) {
-
-
+  function comfirmStep2() {
     if (areAddressesFilled()) {
       warpRouteState.state = 'DeployingRoutes'
     }
-
   }
 
   let contractFromLists = [
@@ -358,6 +355,10 @@
     }
   })
 
+  function comfirmStep3 () {
+    warpRouteState.state = 'ManagingContract';
+  }
+
 </script>
 
 <section class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-4 lg:py-10">
@@ -372,19 +373,19 @@
 
 <div class="m-8">
   <a
-      href="/"
-      class="link !no-underline text-base-content/80 hover:text-base-content inline-flex items-center gap-1"
-      title="Back to Homee"
+    href="/"
+    class="link !no-underline text-base-content/80 hover:text-base-content inline-flex items-center gap-1"
+    title="Back to Homee"
   >
-      <AbstractIcon name={icons.ArrowBack.name} width="20" height="20" />
-      Back to Home
+    <AbstractIcon name={icons.ArrowBack.name} width="20" height="20" />
+    Back to Home
   </a>
 </div>
 
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[0].pathname}>
     <div class="divider divider-primary ">
-      <p class="btn btn-accent text-2xl">Step 1 : Select Routes</p>
+      <h1 class="btn btn-accent text-2xl">Step 1 : Select Routes</h1>
     </div>
   </section>
 </Background>
@@ -393,7 +394,7 @@
 
   {#if warpRouteState.state === 'SettingUproute' || 'SettingTokens' || 'DeployingPrimaryToken'}
 
-    <legend class="fieldset-legend font-bold">Routes:</legend>
+    <legend class="fieldset-legend font-bold text-xl">Routes:</legend>
     <fieldset class="fieldset">
 
       <select class="select select-md"
@@ -411,13 +412,17 @@
 
   {#if warpRouteState.state === 'SettingTokens' || warpRouteState.state === 'DeployingPrimaryToken'}
 
+    <h2 class="font-bold text-xl">
+      Select Contract Features:
+    </h2>
+
     <div class="flex flex-row justify-between grow gap-4">
 
       <div class="flex flex-col gap-4">
 
-        <p class="font-bold">
-          Select Contract on origin chain:
-        </p>
+        <div class="font-bold text-xl bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >
+          On origin chain::
+        </div>
 
         <details class="dropdown dropdown-right" bind:open={openDropdownFrom}>
           <summary class="btn m-1" >
@@ -440,9 +445,9 @@
 
       <div class="flex flex-col gap-4">
 
-        <p class="font-bold">
-          Select Contract on destination chain:
-        </p>
+        <div class="font-bold text-xl bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >
+          On destination chain:
+        </div>
 
         <details class="dropdown dropdown-left" bind:open={openDropdownTo}>
           <summary class="btn m-1">
@@ -499,9 +504,9 @@
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[1].pathname}>
     <div class="divider divider-primary ">
-      <p class={`btn ${warpRouteState.state !== 'DeployingPrimaryToken' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
+      <h1 class={`btn ${warpRouteState.state !== 'DeployingPrimaryToken' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
         Step 2 : Deploy dependency contract
-      </p>
+      </h1>
     </div>
   </section>
 </Background>
@@ -519,11 +524,11 @@
     <!-- Source Chain -->
     {#if contactFromPrimaryStandard === 'None'}
       <h2 class="font-semibold text-xl">
-        No Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
+        No Address required at <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
       </h2>
     {:else}
       <h2 class="font-semibold text-xl">
-        Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
+        Address required at <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
       </h2>
 
       <div class="flex flex-row items-center gap-x-8 mx-8">
@@ -722,9 +727,9 @@
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[2].pathname}>
     <div class="divider divider-primary ">
-      <p class={`btn ${warpRouteState.state !== 'DeployingRoutes' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
+      <h1 class={`btn ${warpRouteState.state !== 'DeployingRoutes' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
         Step 3 : Deploy & Visualize Route
-      </p>
+      </h1>
     </div>
   </section>
 </Background>
@@ -744,7 +749,7 @@
 
     <div class="flex flex-col justify-center gap-y-4 pt-3 pb-4">
       <h3 class="m-4 font-semibold">
-        Use <a class="bg-primary underline" href="https://book.getfoundry.sh/projects/creating-a-new-project" target="_blank" rel="noreferrer">Hyperlane CLI</a> to initialize a config file:
+        Use <a class="bg-primary underline" href="https://docs.hyperlane.xyz/docs/reference/cli" target="_blank" rel="noreferrer">Hyperlane CLI</a> to initialize a config file:
       </h3>
       <CopyBlock
         boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
@@ -828,27 +833,27 @@
 
     </div>
 
-    <h2 class="font-semibold text-xl m-4">
+    <h3 class="font-semibold text-xl m-4">
       <div class="bg-gradient-to-r from-red-600 via-green-500 to-indigo-400 text-transparent bg-clip-text" >Smart Contract Visualization</div> - See what your are being deployed :
-    </h2>
+    </h3>
 
     <div class="flex flex-row justif-center items-center gap-x-16 ">
 
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Left : source chain</div>
-      </h2>
+      </h3>
 
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         {initialContractFromTab}
-      </h2>
+      </h3>
   
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Right : destination chain</div>
-      </h2>
+      </h3>
   
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         {initialContractToTab}
-      </h2>
+      </h3>
 
       <AbstractIcon name={icons.MenuDown.name} width="24" height="24" />
     </div>
@@ -934,9 +939,109 @@
       {/snippet}
 
     </WizardDouble>
+
+    <div class="w-full flex flex-row justify-end">
+      <Button
+          disabled={!areAddressesFilled()}
+          variant="default"
+          type="submit"
+          onclick={comfirmStep3}
+      >
+          Confirm Deployment
+      </Button>
+    </div>
     
   </div>
 {/if}
+
+<Background color="bg-base-100 pt-3 pb-4">
+  <section id={stepLinks[3].pathname}>
+    <div class="divider divider-primary ">
+      <h1 class={`btn ${warpRouteState.state !== 'ManagingContract' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
+        Step 4 : Manage Contract
+      </h1>
+    </div>
+  </section>
+</Background>
+
+<ScrollStep links={stepLinks} titleHighlighted={stepLinks[3].title} />
+
+<div class="container flex flex-col gap-x-4 gap-y-4 p-8 mx-8">
+
+  {#if warpRouteState.state == 'SettingUproute' || warpRouteState.state == 'SettingTokens' || warpRouteState.state == 'DeployingPrimaryToken' || warpRouteState.state == 'DeployingRoutes'}
+    <div class="flex flex-row justify-center items-center p-8 mx-8 ">
+      <p class="font-bold text-xl">
+        Complete step three first!
+      </p>
+    </div>
+  {:else}
+
+    {#if contractFromTab === 'HypFiatToken'}
+
+      <p class="m-4 font-semibold">
+        There are three roles that are relevant on the <span class="underline bg-secondary">FiatToken</span> and <span class="underline bg-secondary">MasterMinter</span> contracts:
+      </p>
+
+      <p class="m-4 font-semibold">
+        <span class="bg-secondary underline">MasterMinter owner</span> is the account that can set controllers and minters.
+      </p>
+
+      <p class="m-4 font-semibold">
+        <span class="bg-secondary underline">MasterMinter controller</span> is the account that can set the mint limits for its assigned minters.
+      </p>
+
+      <p class="m-4 font-semibold">
+        <span class="bg-secondary underline">MasterMinter minter</span> is the account that can actually call mint on <span class="bg-secondary underline">FiatToken</span>.
+      </p>
+
+      <p class="m-4 font-semibold">
+        There are three actions that should be set on the <span class="underline bg-secondary">MasterMinter</span> contract:
+      </p>
+
+
+      <h2 class="m-4 font-semibold">
+        <span class="bg-secondary underline">1. Remove the previous test controller:</span>
+      </h2>
+
+      <p class="m-4 font-semibold">
+        As the owner, remove the previous test controller via  <a class="bg-primary underline" href="https://github.com/circlefin/stablecoin-evm/blob/master/contracts/minting/Controller.sol#L87C14-L87C51" target="_blank" rel="noreferrer">removeController(address _controller) function</a>
+      </p>
+
+      <h2 class="m-4 font-semibold">
+        <span class="bg-secondary underline">2. Set the controller and minter:</span>
+      </h2>
+
+      <p class="m-4 font-semibold">
+        As the owner, set the controller and minter via  <a class="bg-primary underline" href="https://github.com/circlefin/stablecoin-evm/blob/master/contracts/minting/Controller.sol#L70" target="_blank" rel="noreferrer">configureController(address controller, address worker) function</a>
+      </p>
+
+      <h2 class="m-4 font-semibold">
+        <span class="bg-secondary underline">3. Set the mint limits:</span>
+      </h2>
+      
+      <p class="m-4 font-semibold">
+        As the controller, set the mint limits via  <a class="bg-primary underline" href="https://github.com/circlefin/stablecoin-evm/blob/master/contracts/minting/MintController.sol#L116" target="_blank" rel="noreferrer">configureMinter(uint256 _newAllowance) function</a>
+      </p>
+    
+    {/if}
+
+    {#if contractFromTab === 'HypXERC20' || contractFromTab === 'HypXERC20Lockbox' || contractToTab === 'HypXERC20' || contractToTab === 'HypXERC20Lockbox'}
+
+      <h3 class="m-4 font-semibold">
+        The minting and burning limits for the Warp Route contract are managed through the <a class="bg-primary underline" href="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20.sol#L85" target="_blank" rel="noreferrer">setLimits</a> to initialize a config file:
+      </h3>
+      <p class="m-4 font-semibold">
+        The xERC20 contract uses a 24-hour window to manage limits. This is defined by the <a class="bg-secondary underline" href="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20.sol#L13" target="_blank" rel="noreferrer">_DURATION</a> variable, which is set to 1 days (24 hours). The current available limits are calculated dynamically using the <a class="underline" href="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20.sol#L234" target="_blank" rel="noreferrer">_getCurrentLimit</a> function.
+      </p>
+      <p class="m-4 font-semibold">
+        If 24 hours <a class="bg-secondary underline" href="https://github.com/defi-wonderland/xERC20/blob/main/solidity/contracts/XERC20.sol#L13" target="_blank" rel="noreferrer">_DURATION</a> have passed since the last use, the limit will automatically restore to the full "maxLimit".
+      </p>
+
+    {/if}
+
+  {/if}
+
+</div>
 
 <style lang="postcss">
 
