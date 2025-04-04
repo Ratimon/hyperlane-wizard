@@ -87,7 +87,6 @@
     tokenToAddress: '0x',
   });
 
-
   let initialContractPrimaryTokenFromTab: string | undefined = $state('MyERC20');
   let contractPrimaryTokenFromTab: KindPrimaryTokenFrom = $derived(sanitizeKindPrimaryTokenFrom(initialContractPrimaryTokenFromTab));
   let allOptsPrimaryTokenFrom: { [k in KindPrimaryTokenFrom]?: Required<KindedPrimaryTokenFromOptions [k]> } =  $state({});
@@ -189,8 +188,40 @@
     isPrimaryTokenToDeployed = !isPrimaryTokenToDeployed
   }
 
+  function areAddressesFilled( ) {
+    if (warpRouteState.route === 'Collateral to Synthetic') {
+      return warpRouteState.tokenFromAddress !== '0x'
+    }
+
+    if (warpRouteState.route === 'xERC20 Routes') {
+      return warpRouteState.tokenFromAddress !== '0x' && warpRouteState.tokenToAddress !== '0x'
+    }
+
+    return false
+  }
+
   function comfirmStep2( ) {
-    warpRouteState.state = 'DeployingRoutes'
+
+    // if (warpRouteState.route === 'Collateral to Synthetic') {
+
+    //   if (warpRouteState.tokenFromAddress == '0x') {
+    //     return
+    //   }
+      
+    // }
+
+    // if (warpRouteState.route === 'xERC20 Routes') {
+
+    //   if (warpRouteState.tokenFromAddress == '0x' || warpRouteState.tokenToAddress == '0x') {
+    //     return
+    //   }
+      
+    // }
+
+    if (areAddressesFilled()) {
+      warpRouteState.state = 'DeployingRoutes'
+    }
+
   }
 
   let contractFromLists = [
@@ -439,21 +470,21 @@
     </div>
 
     <div class="flex flex-row justify-end items-center gap-x-16 ">
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Your Routes: </div>
-      </h2>
+      </h3>
 
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         {initialContractFromTab}
-      </h2>
+      </h3>
 
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >To</div>
-      </h2>
+      </h3>
 
-      <h2 class="font-semibold text-xl">
+      <h3 class="font-semibold text-xl">
         {initialContractToTab}
-      </h2>
+      </h3>
 
       <Button
           variant="default"
@@ -684,10 +715,12 @@
 
     <div class="w-full flex flex-row justify-end">
       <Button
+          disabled={!areAddressesFilled()}
           variant="default"
           type="submit"
           onclick={comfirmStep2}
       >
+
           Confirm the Addresses
       </Button>
     </div>
@@ -716,18 +749,13 @@
   </div>
 {:else}
 
-  <!-- <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
 
-  </div> -->
+  <div class="container flex flex-col gap-x-4 gap-y-4 p-8 mx-8">
 
-
-  <div class="container flex flex-col gap-4 p-8 mx-8">
-
-
-    <div class="pt-3 pb-4 justify-center">
-      <h2 class="m-4 font-semibold">
-        Use <a class="bg-primary underline" href="https://book.getfoundry.sh/projects/creating-a-new-project" target="_blank" rel="noreferrer">Hyperlane CLI</a>to deploy below routes:
-      </h2>
+    <div class="flex flex-col justify-center gap-y-4 pt-3 pb-4">
+      <h3 class="m-4 font-semibold">
+        Use <a class="bg-primary underline" href="https://book.getfoundry.sh/projects/creating-a-new-project" target="_blank" rel="noreferrer">Hyperlane CLI</a> to initialize a config file:
+      </h3>
       <CopyBlock
         boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
         class="mb-5"
@@ -737,24 +765,87 @@
         text={`hyperlane warp init`}
       />
 
-      <p class="mt-6 text-base-300">
-        Dont forget to config `.env` file. Check out at 
-        <a class="underline" href="https://github.com/" target="_blank" rel="noreferrer"
-          >doc</a
-        >
+      <h3 class="m-4 font-semibold">
+        This will generate <a class="bg-primary underline" href="https://github.com/hyperlane-xyz/hyperlane-monorepo/blob/0e5c941b7b78779055731ad5daed79817535da7a/typescript/cli/examples/warp-route-deployment.yaml#L4" target="_blank" rel="noreferrer">warp-route-deployment.yaml</a> to prepare for deployment.
+      </h3>
+
+      <h3 class="m-4 font-semibold">
+          During CLI config process, enter your contract addresses in previous step as following:
+      </h3>
+
+      <div class="flex flex-row justif-center items-center gap-x-16 ">
+
+        <h3 class="font-medium text-base">
+          <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain Deployed Addresses: </div>
+        </h3>
+
+
+        {#if contactFromPrimaryStandard === 'None'}
+          <h3 class="font-medium text-base">
+            No Address required
+          </h3>
+        {:else}
+          <CopyBlock
+            boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
+            class="mb-5"
+            background="bg-primary-content"
+            copiedBackground="bg-success"
+            copiedColor="text-success-content"
+            text={warpRouteState.tokenFromAddress}
+          />
+        {/if}
+
+        <h3 class="font-medium text-base">
+          <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Destination Chain Deployed Addresses: </div>
+        </h3>
+  
+        {#if contactToPrimaryStandard === 'None'}
+          <h3 class="font-medium text-base">
+            No Address required
+          </h3>
+        {:else}
+
+        <CopyBlock
+          boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
+          class="mb-5"
+          background="bg-primary-content"
+          copiedBackground="bg-success"
+          copiedColor="text-success-content"
+            text={warpRouteState.tokenToAddress}
+          />
+        {/if}
+
+      </div>
+
+      <p class="m-4 text-base-300">
+        Check out about warp route deployment at 
+         <a class="underline" href="https://docs.hyperlane.xyz/docs/protocol/warp-routes/warp-routes-yield-routes/" target="_blank" rel="noreferrer"
+           >doc</a
+         >
       </p>
+
+      <h3 class="m-4 font-semibold">
+        Run the following command to deploy the warp route.
+      </h3>
+      <CopyBlock
+        boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
+        class="mb-5"
+        background="bg-primary-content"
+        copiedBackground="bg-success"
+        copiedColor="text-success-content"
+        text={`hyperlane warp deploy`}
+      />
 
     </div>
 
-
     <h2 class="font-semibold text-xl m-4">
-      <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Smart Contract Visualization: </div>
+      <div class="bg-gradient-to-r from-red-600 via-green-500 to-indigo-400 text-transparent bg-clip-text" >Smart Contract Visualization</div> - See what your are being deployed :
     </h2>
 
     <div class="flex flex-row justif-center items-center gap-x-16 ">
 
       <h2 class="font-semibold text-xl">
-        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Left</div>
+        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Left : source chain</div>
       </h2>
 
       <h2 class="font-semibold text-xl">
@@ -762,7 +853,7 @@
       </h2>
   
       <h2 class="font-semibold text-xl">
-        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Right</div>
+        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Right : destination chain</div>
       </h2>
   
       <h2 class="font-semibold text-xl">
@@ -784,108 +875,71 @@
       contractTwoInstance={contractTo}
     >
 
-
       {#snippet control()}
 
         <!-- From Contract Controls  -->
-
         {#if contractFromTab === 'HypERC20Collateral'}
           <div class:hidden={contractFromTab !== 'HypERC20Collateral'}>
             <HypERC20CollateralContractControls bind:opts={allOptsFrom.HypERC20Collateral!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'HypFiatToken'}
           <div class:hidden={contractFromTab !== 'HypFiatToken'}>
             <HypFiatTokenContractControls bind:opts={allOptsFrom.HypFiatToken!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'HypERC4626Collateral'}
           <div class:hidden={contractFromTab !== 'HypERC4626Collateral'}>
             <HypERC4626CollateralContractControls bind:opts={allOptsFrom.HypERC4626Collateral!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'HypERC4626OwnerCollateral'}
           <div class:hidden={contractFromTab !== 'HypERC4626OwnerCollateral'}>
             <HypERC4626OwnerCollateralContractControls bind:opts={allOptsFrom.HypERC4626OwnerCollateral!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'HypERC4626OwnerCollateral'}
           <div class:hidden={contractFromTab !== 'HypERC4626OwnerCollateral'}>
             <HypERC4626OwnerCollateralContractControls bind:opts={allOptsFrom.HypERC4626OwnerCollateral!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'FastHypERC20Collateral'}
           <div class:hidden={contractFromTab !== 'FastHypERC20Collateral'}>
             <FastHypERC20CollateralContractControls bind:opts={allOptsFrom.FastHypERC20Collateral!}/>
           </div>
         {/if}
-
         {#if contractFromTab === 'HypXERC20'}
           <div class:hidden={contractFromTab !== 'HypXERC20'}>
             <HypXERC20ContractControls bind:opts={allOptsFrom.HypXERC20!}/>
           </div>
         {/if}
-
-
         {#if contractFromTab === 'HypXERC20Lockbox'}
           <div class:hidden={contractFromTab !== 'HypXERC20Lockbox'}>
             <HypXERC20LockboxContractControls bind:opts={allOptsFrom.HypXERC20Lockbox!}/>
           </div>
         {/if}
 
-
         <!-- To Contract Controls  -->
-
         {#if contractToTab === 'HypERC20'}
           <div class:hidden={contractToTab !== 'HypERC20'}>
             <HypERC20ContractControls bind:opts={allOptsTo.HypERC20!}/>
           </div>
         {/if}
-
         {#if contractToTab === 'FastHypERC20'}
           <div class:hidden={contractToTab !== 'FastHypERC20'}>
             <FastHypERC20ContractControls bind:opts={allOptsTo.FastHypERC20!}/>
           </div>
         {/if}
-
         {#if contractToTab === 'HypXERC20'}
           <div class:hidden={contractToTab !== 'HypXERC20'}>
             <HypXERC20ContractControls bind:opts={allOptsTo.HypXERC20!}/>
           </div>
         {/if}
-        
         {#if contractToTab === 'HypXERC20Lockbox'}
           <div class:hidden={contractToTab !== 'HypXERC20Lockbox'}>
             <HypXERC20LockboxContractControls bind:opts={allOptsTo.HypXERC20Lockbox!}/>
           </div>
         {/if}
-        
-    
-        <!-- <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto"> -->
-      
-          
-          <!-- {#if contractPrimaryTokenFromTab === 'ERC4626'}
-            <div class:hidden={contractPrimaryTokenFromTab !== 'ERC4626'}>
-              <ERC4626ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC4626!}/>
-            </div>
-          {/if}
-          {#if contractPrimaryTokenFromTab === 'XERC20'}
-            <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20'}>
-              <XERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20!}/>
-            </div>
-          {/if}
-          {#if contractPrimaryTokenFromTab === 'XERC20Lockbox'}
-            <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20Lockbox'}>
-              <XERC20LockboxContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20Lockbox!}/>
-            </div>
-          {/if} -->
-          
-        <!-- </div> -->
 
       {/snippet}
 
