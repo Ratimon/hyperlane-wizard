@@ -1,6 +1,6 @@
-import type { GenericPrimaryTokenOptions } from './build-generic';
+import type { GenericAllOptions } from './build-generic';
 
-export type Kind = GenericPrimaryTokenOptions['kind'];
+export type Kind = GenericAllOptions['kind'];
 
 export function sanitizeKind(kind: unknown): Kind {
   if (typeof kind === 'string') {
@@ -21,14 +21,17 @@ function isKind<T>(value: Kind | T): value is Kind {
       return true;
     case 'HypERC4626OwnerCollateral':
       return true;
-    case 'HypERC20':
-      return true;
     case 'FastHypERC20Collateral':
       return true;
 
     case 'HypXERC20':
       return true;
     case 'HypXERC20Lockbox':
+      return true;
+
+    case 'HypERC20':
+        return true;
+    case 'FastHypERC20':
       return true;
 
     case 'ERC20':

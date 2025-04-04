@@ -31,14 +31,26 @@
   import AbstractIcon from '$lib/ui/icons/AbstractIcon.svelte';
   import Background from '$lib/ui/layouts/Background.svelte';
   import Button from "$lib/ui/buttons/Button.svelte";
-  // import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
+  import CopyBlock from "$lib/ui/components/CopyBlock.svelte";
   import ScrollStep from '$lib/ui/components/ScrollStep.svelte';
   import WizardSingle from '$lib/ui/components/WizardSingle.svelte';
+  import WizardDouble from "$lib/ui/components/WizardDouble.svelte";
   import OverflowMenu from '$lib/ui/layouts/OverflowMenu.svelte';
   import ERC20ContractControls from '$lib/ui/controls/ERC20ContractControls.svelte';
   import ERC4626ContractControls from '$lib/ui/controls/ERC4626ContractControls.svelte';
   import XERC20ContractControls from '$lib/ui/controls/XERC20ContractControls.svelte';
   import XERC20LockboxContractControls from '$lib/ui/controls/XERC20LockboxContractControls.svelte';
+
+  import HypERC20CollateralContractControls from '$lib/ui/controls/HypERC20CollateralContractControls.svelte';
+  import HypFiatTokenContractControls from '$lib/ui/controls/HypFiatTokenContractControls.svelte';
+  import HypERC4626CollateralContractControls from '$lib/ui/controls/HypERC4626CollateralContractControls.svelte';
+  import HypERC4626OwnerCollateralContractControls from '$lib/ui/controls/HypERC4626OwnerCollateralContractControls.svelte';
+  import FastHypERC20CollateralContractControls from '$lib/ui/controls/FastHypERC20CollateralContractControls.svelte';
+
+  import HypERC20ContractControls from '$lib/ui/controls/HypERC20ContractControls.svelte';
+  import FastHypERC20ContractControls from '$lib/ui/controls/FastHypERC20ContractControls.svelte';
+  import HypXERC20ContractControls from '$lib/ui/controls/HypXERC20ContractControls.svelte';
+  import HypXERC20LockboxContractControls from '$lib/ui/controls/HypXERC20LockboxContractControls.svelte';
 
   type Props = {
       data: PageData;
@@ -48,8 +60,8 @@
 
   const stepLinks : Link[] = [
       {pathname: '#1-select-routes', title: 'Select Routes', navType: 'scroll' },
-      {pathname: '#2-primary-erc20', title: 'Deploy Primary ERC20', navType: 'scroll' },
-      {pathname: '#3-visualize', title: 'Visualize Bridge Flow', navType: 'scroll'},
+      {pathname: '#2-primary', title: 'Deploy dependency contract', navType: 'scroll' },
+      {pathname: '#3-deploy', title: 'Deploy & Visualize', navType: 'scroll'},
   ];
 
   type Route = 'Pick a route'
@@ -63,18 +75,17 @@
   type WarpRoute = {
     state: RouteState;
     route: Route;
-    // tokenFrom: string;
-    // tokenTo: string;
+    tokenFromAddress: string;
+    tokenToAddress: string;
     // error?: unknown;
   };
 
   const warpRouteState: WarpRoute = $state({
     state: 'SettingUproute',
     route: 'Pick a route',
-    tokenFrom: '',
-    tokenTo: '',
+    tokenFromAddress: '0x',
+    tokenToAddress: '0x',
   });
-
 
 
   let initialContractPrimaryTokenFromTab: string | undefined = $state('MyERC20');
@@ -160,7 +171,7 @@
     openDropdownTo = false
   }
 
-  function comfirmRoute( primaryFromToken: string, primaryToToken: string ) {
+  function comfirmStep1( primaryFromToken: string, primaryToToken: string ) {
     warpRouteState.state = 'DeployingPrimaryToken'
     initialContractPrimaryTokenFromTab = primaryFromToken;
     initialContractPrimaryTokenToTab = primaryToToken;
@@ -176,6 +187,10 @@
 
   function togglePrimaryTokenToDeployed( ) {
     isPrimaryTokenToDeployed = !isPrimaryTokenToDeployed
+  }
+
+  function comfirmStep2( ) {
+    warpRouteState.state = 'DeployingRoutes'
   }
 
   let contractFromLists = [
@@ -234,25 +249,24 @@
 
   let contractFrom: Contract = $state(new ContractBuilder('HypERC20Collateral'));
   const optsContractFrom = $derived(allOptsFrom[contractFromTab]);
-
-  // let errorsContractFrom : { [k in KindFrom]?: OptionsErrorMessages } =  $state({});
+  let errorsContractFrom : { [k in KindFrom]?: OptionsErrorMessages } =  $state({});
 
   $effect(() => {
-      if (optsContractFrom) {
-        try {
-          contractFrom = buildContractGeneric(optsContractFrom) as Contract;
-        //   deployContract = buildDeployGeneric(opts);
-        //   testContract = buildTestGeneric(opts);
+    if (optsContractFrom) {
+      try {
+        contractFrom = buildContractGeneric(optsContractFrom) as Contract;
+      //   deployContract = buildDeployGeneric(opts);
+      //   testContract = buildTestGeneric(opts);
 
-          errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = undefined;
-        } catch (e: unknown) {
-          if (e instanceof OptionsError) {
-              errorsPrimaryTokenFrom[contractPrimaryTokenFromTab] = e.messages;
-          } else {
-          throw e;
-          }
+        errorsContractFrom[contractFromTab] = undefined;
+      } catch (e: unknown) {
+        if (e instanceof OptionsError) {
+          errorsContractFrom[contractFromTab] = e.messages;
+        } else {
+        throw e;
         }
       }
+    }
   });
 
   let contactFromPrimaryStandard:  string = $state('ERC20')
@@ -297,6 +311,27 @@
 
   let initialContractToTab: string | undefined = $state(undefined);
   let contractToTab : KindTo = $derived(sanitizeKindTo(initialContractToTab));
+  let allOptsTo: { [k in KindTo]?: Required<KindedToOptions [k]> } =  $state({});
+
+  let contractTo: Contract = $state(new ContractBuilder('HypERC20'));
+  const optsContractTo = $derived(allOptsTo[contractToTab]);
+  let errorsContractTo : { [k in KindTo]?: OptionsErrorMessages } =  $state({});
+
+  $effect(() => {
+    if (optsContractTo) {
+      try {
+        contractTo = buildContractGeneric(optsContractTo) as Contract;
+
+        errorsContractTo[contractToTab] = undefined;
+      } catch (e: unknown) {
+        if (e instanceof OptionsError) {
+          errorsContractTo[contractToTab] = e.messages;
+        } else {
+        throw e;
+        }
+      }
+    }
+  });
 
   let contactToPrimaryStandard:  string = $state('xERC20Lockbox')
 
@@ -307,21 +342,17 @@
     }
   })
 
-
 </script>
 
 <section class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-4 lg:py-10">
       
   <div class="flex flex-col gap-10 lg:gap-7 items-center justify-center text-center lg:text-left lg:items-start">
-    
     <h1 class="font-bold text-3xl lg:text-5xl tracking-tight md:-mb-4 bg-gradient-to-r from-red-600 via-green-500 to-indigo-400 text-transparent bg-clip-text">
         Let Build Your Own Bridge!
     </h1>
-
   </div>
 
 </section>
-
 
 <Background color="bg-base-100 pt-3 pb-4">
   <section id={stepLinks[0].pathname}>
@@ -372,7 +403,6 @@
                 <li>
                   <button onclick={() => selectTokenFrom(contract.name)}>
                     {contract.label}
-                   
                   </button>
                 </li>
               {/each}
@@ -408,8 +438,7 @@
     
     </div>
 
-    <div class="flex flex-row justify-center items-center gap-x-16 ">
-
+    <div class="flex flex-row justify-end items-center gap-x-16 ">
       <h2 class="font-semibold text-xl">
         <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Your Routes: </div>
       </h2>
@@ -430,11 +459,10 @@
           variant="default"
           class="button block"
           type="submit"
-          onclick={() => comfirmRoute(contactFromPrimaryStandard, contactToPrimaryStandard)}
+          onclick={() => comfirmStep1(contactFromPrimaryStandard, contactToPrimaryStandard)}
       >
          Confirm this Route
       </Button>
-
     </div>
   
   {/if}
@@ -445,7 +473,7 @@
   <section id={stepLinks[1].pathname}>
     <div class="divider divider-primary ">
       <p class={`btn ${warpRouteState.state !== 'DeployingPrimaryToken' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
-        Step 2 : Deploy Primary Token
+        Step 2 : Deploy dependency contract
       </p>
     </div>
   </section>
@@ -453,20 +481,20 @@
 
 <ScrollStep links={stepLinks} titleHighlighted={stepLinks[1].title} />
 
-{#if warpRouteState.state !== 'DeployingPrimaryToken'}
-
+{#if warpRouteState.state == 'SettingUproute' || warpRouteState.state == 'SettingTokens'}
   <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
-
     <p class="font-bold text-xl">
       Complete step One first!
     </p>
-
   </div>
-
+<!-- {:else if warpRouteState.state == 'DeployingRoutes'}
+  <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
+    <p class="font-bold text-xl">
+      Complete step One first!
+    </p>
+  </div> -->
 {:else}
-
   <div class="container flex flex-col items-center justify-center gap-y-8 p-8 mx-8">
-
     <!-- Source Chain -->
     {#if contactFromPrimaryStandard === 'None'}
       <h2 class="font-semibold text-xl">
@@ -477,7 +505,7 @@
         Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Source Chain: </div>
       </h2>
 
-      <div class="flex flex-row items-center gap-x-16 mx-8">
+      <div class="flex flex-row items-center gap-x-8 mx-8">
       
         <h3 class="font-semibold text-xl">
           The standard being deployed is:
@@ -497,9 +525,9 @@
           </label>
         </fieldset>
 
-        <label class="input input-xl validator">
+        <label class="input input-primary input-xl validator">
           <!-- <legend class="fieldset-legend">Put required address here</legend> -->
-          <input placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
+          <input bind:value={warpRouteState.tokenFromAddress} placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
         </label>
         <p class="validator-hint hidden">
           Must be in the format of 0x followed by 40 characters
@@ -546,19 +574,16 @@
                   <ERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC20!}/>
                 </div>
               {/if}
-    
               {#if contractPrimaryTokenFromTab === 'ERC4626'}
                 <div class:hidden={contractPrimaryTokenFromTab !== 'ERC4626'}>
                   <ERC4626ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC4626!}/>
                 </div>
               {/if}
-
               {#if contractPrimaryTokenFromTab === 'XERC20'}
                 <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20'}>
                   <XERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20!}/>
                 </div>
               {/if}
-
               {#if contractPrimaryTokenFromTab === 'XERC20Lockbox'}
                 <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20Lockbox'}>
                   <XERC20LockboxContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20Lockbox!}/>
@@ -571,11 +596,9 @@
         </WizardSingle>
     
       {/if}
-
     {/if}
 
     <!-- Destination Chain -->
-
     {#if contactToPrimaryStandard === 'None'}
       <h2 class="font-semibold text-xl">
         No Address required at<div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Destination Chain: </div>
@@ -605,9 +628,9 @@
           </label>
         </fieldset>
 
-        <label class="input input-xl validator">
+        <label class="input input-primary input-xl validator">
           <!-- <legend class="fieldset-legend">Put required address here</legend> -->
-          <input placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
+          <input bind:value={warpRouteState.tokenToAddress} placeholder="Put required address here e.g. 0x.." type="text" required  minlength="42" pattern="/^0x[a-fA-F0-9]{40}$/" title="Must be a valid Ethereum address" />
         </label>
         <p class="validator-hint hidden">
           Must be in the format of 0x followed by 40 characters
@@ -653,18 +676,222 @@
               
             </div>
           {/snippet}
-        
         </WizardSingle>
     
       {/if}
 
     {/if}
 
-
+    <div class="w-full flex flex-row justify-end">
+      <Button
+          variant="default"
+          type="submit"
+          onclick={comfirmStep2}
+      >
+          Confirm the Addresses
+      </Button>
+    </div>
 
   </div>
 
+{/if}
 
+<Background color="bg-base-100 pt-3 pb-4">
+  <section id={stepLinks[2].pathname}>
+    <div class="divider divider-primary ">
+      <p class={`btn ${warpRouteState.state !== 'DeployingRoutes' ? 'btn-disabled' : 'btn-accent'} text-2xl `}>
+        Step 3 : Deploy & Visualize Route
+      </p>
+    </div>
+  </section>
+</Background>
+
+<ScrollStep links={stepLinks} titleHighlighted={stepLinks[2].title} />
+
+{#if warpRouteState.state == 'SettingUproute' || warpRouteState.state == 'SettingTokens' || warpRouteState.state == 'DeployingPrimaryToken'}
+  <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
+    <p class="font-bold text-xl">
+      Complete step Two first!
+    </p>
+  </div>
+{:else}
+
+  <!-- <div class="container flex flex-row justify-center items-center p-8 mx-8 ">
+
+  </div> -->
+
+
+  <div class="container flex flex-col gap-4 p-8 mx-8">
+
+
+    <div class="pt-3 pb-4 justify-center">
+      <h2 class="m-4 font-semibold">
+        Use <a class="bg-primary underline" href="https://book.getfoundry.sh/projects/creating-a-new-project" target="_blank" rel="noreferrer">Hyperlane CLI</a>to deploy below routes:
+      </h2>
+      <CopyBlock
+        boxClass="p-2 rounded-box font-black text-primary max-w-xl mx-auto"
+        class="mb-5"
+        background="bg-primary-content"
+        copiedBackground="bg-success"
+        copiedColor="text-success-content"
+        text={`hyperlane warp init`}
+      />
+
+      <p class="mt-6 text-base-300">
+        Dont forget to config `.env` file. Check out at 
+        <a class="underline" href="https://github.com/" target="_blank" rel="noreferrer"
+          >doc</a
+        >
+      </p>
+
+    </div>
+
+
+    <h2 class="font-semibold text-xl m-4">
+      <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Smart Contract Visualization: </div>
+    </h2>
+
+    <div class="flex flex-row justif-center items-center gap-x-16 ">
+
+      <h2 class="font-semibold text-xl">
+        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Left</div>
+      </h2>
+
+      <h2 class="font-semibold text-xl">
+        {initialContractFromTab}
+      </h2>
+  
+      <h2 class="font-semibold text-xl">
+        <div class="bg-gradient-to-r from-red-600 via-yellow-500 to-orange-400 text-transparent bg-clip-text" >Right</div>
+      </h2>
+  
+      <h2 class="font-semibold text-xl">
+        {initialContractToTab}
+      </h2>
+
+      <AbstractIcon name={icons.MenuDown.name} width="24" height="24" />
+    </div>
+
+    <WizardDouble
+      initialContractOneTab={initialContractFromTab}
+      contractOneTab={contractFromTab}
+      optsOne={optsContractFrom}
+      contractOneInstance={contractFrom}
+
+      initialContractTwoTab={initialContractToTab}
+      contractTwoTab={contractToTab}
+      optsTwo={optsContractTo}
+      contractTwoInstance={contractTo}
+    >
+
+
+      {#snippet control()}
+
+        <!-- From Contract Controls  -->
+
+        {#if contractFromTab === 'HypERC20Collateral'}
+          <div class:hidden={contractFromTab !== 'HypERC20Collateral'}>
+            <HypERC20CollateralContractControls bind:opts={allOptsFrom.HypERC20Collateral!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'HypFiatToken'}
+          <div class:hidden={contractFromTab !== 'HypFiatToken'}>
+            <HypFiatTokenContractControls bind:opts={allOptsFrom.HypFiatToken!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'HypERC4626Collateral'}
+          <div class:hidden={contractFromTab !== 'HypERC4626Collateral'}>
+            <HypERC4626CollateralContractControls bind:opts={allOptsFrom.HypERC4626Collateral!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'HypERC4626OwnerCollateral'}
+          <div class:hidden={contractFromTab !== 'HypERC4626OwnerCollateral'}>
+            <HypERC4626OwnerCollateralContractControls bind:opts={allOptsFrom.HypERC4626OwnerCollateral!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'HypERC4626OwnerCollateral'}
+          <div class:hidden={contractFromTab !== 'HypERC4626OwnerCollateral'}>
+            <HypERC4626OwnerCollateralContractControls bind:opts={allOptsFrom.HypERC4626OwnerCollateral!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'FastHypERC20Collateral'}
+          <div class:hidden={contractFromTab !== 'FastHypERC20Collateral'}>
+            <FastHypERC20CollateralContractControls bind:opts={allOptsFrom.FastHypERC20Collateral!}/>
+          </div>
+        {/if}
+
+        {#if contractFromTab === 'HypXERC20'}
+          <div class:hidden={contractFromTab !== 'HypXERC20'}>
+            <HypXERC20ContractControls bind:opts={allOptsFrom.HypXERC20!}/>
+          </div>
+        {/if}
+
+
+        {#if contractFromTab === 'HypXERC20Lockbox'}
+          <div class:hidden={contractFromTab !== 'HypXERC20Lockbox'}>
+            <HypXERC20LockboxContractControls bind:opts={allOptsFrom.HypXERC20Lockbox!}/>
+          </div>
+        {/if}
+
+
+        <!-- To Contract Controls  -->
+
+        {#if contractToTab === 'HypERC20'}
+          <div class:hidden={contractToTab !== 'HypERC20'}>
+            <HypERC20ContractControls bind:opts={allOptsTo.HypERC20!}/>
+          </div>
+        {/if}
+
+        {#if contractToTab === 'FastHypERC20'}
+          <div class:hidden={contractToTab !== 'FastHypERC20'}>
+            <FastHypERC20ContractControls bind:opts={allOptsTo.FastHypERC20!}/>
+          </div>
+        {/if}
+
+        {#if contractToTab === 'HypXERC20'}
+          <div class:hidden={contractToTab !== 'HypXERC20'}>
+            <HypXERC20ContractControls bind:opts={allOptsTo.HypXERC20!}/>
+          </div>
+        {/if}
+        
+        {#if contractToTab === 'HypXERC20Lockbox'}
+          <div class:hidden={contractToTab !== 'HypXERC20Lockbox'}>
+            <HypXERC20LockboxContractControls bind:opts={allOptsTo.HypXERC20Lockbox!}/>
+          </div>
+        {/if}
+        
+    
+        <!-- <div class="controls w-64 flex flex-col shrink-0 justify-between h-[calc(150vh-80px)] overflow-auto"> -->
+      
+          
+          <!-- {#if contractPrimaryTokenFromTab === 'ERC4626'}
+            <div class:hidden={contractPrimaryTokenFromTab !== 'ERC4626'}>
+              <ERC4626ContractControls bind:opts={allOptsPrimaryTokenFrom.ERC4626!}/>
+            </div>
+          {/if}
+          {#if contractPrimaryTokenFromTab === 'XERC20'}
+            <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20'}>
+              <XERC20ContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20!}/>
+            </div>
+          {/if}
+          {#if contractPrimaryTokenFromTab === 'XERC20Lockbox'}
+            <div class:hidden={contractPrimaryTokenFromTab !== 'XERC20Lockbox'}>
+              <XERC20LockboxContractControls bind:opts={allOptsPrimaryTokenFrom.XERC20Lockbox!}/>
+            </div>
+          {/if} -->
+          
+        <!-- </div> -->
+
+      {/snippet}
+
+    </WizardDouble>
+    
+  </div>
 {/if}
 
 <style lang="postcss">

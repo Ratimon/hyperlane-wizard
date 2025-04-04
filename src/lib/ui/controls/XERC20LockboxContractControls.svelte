@@ -6,7 +6,7 @@
     // import UpgradeabilitySection from '$lib/ui/controls/UpgradeabilitySection.svelte';
 
     import type {  OptionsErrorMessages } from '$lib/wizard/shared';
-    import type { KindedPrimaryTokenOptions } from '$lib/wizard/shared';
+    import type { KindedAllOptions } from '$lib/wizard/shared';
   
     import { xerc20lockbox } from '$lib/wizard/smart-contracts';
   
@@ -15,7 +15,7 @@
     // const deployDefaults = deployERC4626Votes.defaults;
 
     type Props = {
-      opts: Required<KindedPrimaryTokenOptions['XERC20Lockbox']>;
+      opts: Required<KindedAllOptions['XERC20Lockbox']>;
     };
 
     let {

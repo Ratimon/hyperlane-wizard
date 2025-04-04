@@ -3,7 +3,7 @@ export type {
     KindedToOptions, GenericToOptions,
     KindedPrimaryTokenFromOptions, GenericPrimaryTokenFromOptions,
     KindedPrimaryTokenToOptions, GenericPrimaryTokenToOptions,
-    KindedPrimaryTokenOptions, GenericPrimaryTokenOptions,
+    KindedAllOptions, GenericAllOptions,
 } from './build-generic';
 
 

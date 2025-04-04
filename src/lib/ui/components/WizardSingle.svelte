@@ -74,9 +74,9 @@
     //   throw new Error("Invalid contract type");
     // }
 
-    code = printContract(contractInstance as Contract);
+      code = printContract(contractInstance as Contract);
       highlightedCode = injectHyperlinks(hljs.highlight(code, {language: 'solidity'} ).value);
-  });
+    });
 
   
   let isScriptCopied = $state(false);
